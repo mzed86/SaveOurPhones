@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Room">
+  <title>Meeting Room Display</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚪</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: -webkit-fill-available;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    .status-display {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .status-display.available {
+      background: linear-gradient(180deg, #1a4d1a 0%, #0d260d 100%);
+    }
+
+    .status-display.busy {
+      background: linear-gradient(180deg, #4d1a1a 0%, #260d0d 100%);
+    }
+
+    .room-name {
+      font-size: 1.5rem;
+      font-weight: 300;
+      opacity: 0.8;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .status-icon {
+      font-size: 5rem;
+      margin-bottom: 20px;
+    }
+
+    .status-text {
+      font-size: 3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .status-message {
+      font-size: 1.25rem;
+      opacity: 0.7;
+      text-align: center;
+    }
+
+    .time-display {
+      font-size: 1rem;
+      opacity: 0.5;
+      margin-top: 30px;
+    }
+
+    .tap-area {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 80px;
+      cursor: pointer;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 15px;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .control-btn {
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      min-width: 100px;
+    }
+
+    .control-btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-available {
+      background: #34c759;
+      color: #fff;
+    }
+
+    .btn-busy {
+      background: #ff3b30;
+      color: #fff;
+    }
+
+    .btn-settings {
+      background: #333;
+      color: #fff;
+    }
+
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      padding: 20px;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .settings-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .setting-group {
+      margin-bottom: 25px;
+    }
+
+    .setting-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .setting-input {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      background: #1c1c1e;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+    }
+
+    .setting-input::placeholder {
+      color: #666;
+    }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="status-display available" id="statusDisplay">
+      <div class="room-name" id="roomName">Conference Room</div>
+      <div class="status-icon" id="statusIcon">✓</div>
+      <div class="status-text" id="statusText">Available</div>
+      <div class="status-message" id="statusMessage">Tap to mark as busy</div>
+      <div class="time-display" id="timeDisplay">12:00</div>
+      <div class="tap-area" id="tapArea"></div>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn btn-available" id="availableBtn">Available</button>
+      <button class="control-btn btn-busy" id="busyBtn">Busy</button>
+      <button class="control-btn btn-settings" id="settingsBtn">⚙️</button>
+    </div>
+
+    <div class="settings-panel" id="settingsPanel" hidden>
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSettings">✕</button>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Room Name</label>
+        <input type="text" class="setting-input" id="roomNameInput" placeholder="Conference Room" maxlength="30">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Available Message</label>
+        <input type="text" class="setting-input" id="availableMessage" placeholder="Tap to mark as busy" maxlength="50">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Busy Message</label>
+        <input type="text" class="setting-input" id="busyMessage" placeholder="Meeting in progress" maxlength="50">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+
+    const state = {
+      isAvailable: true,
+      roomName: 'Conference Room',
+      availableMsg: 'Tap to mark as busy',
+      busyMsg: 'Meeting in progress'
+    };
+
+    const els = {
+      statusDisplay: document.getElementById('statusDisplay'),
+      roomName: document.getElementById('roomName'),
+      statusIcon: document.getElementById('statusIcon'),
+      statusText: document.getElementById('statusText'),
+      statusMessage: document.getElementById('statusMessage'),
+      timeDisplay: document.getElementById('timeDisplay'),
+      tapArea: document.getElementById('tapArea'),
+      availableBtn: document.getElementById('availableBtn'),
+      busyBtn: document.getElementById('busyBtn'),
+      settingsBtn: document.getElementById('settingsBtn'),
+      settingsPanel: document.getElementById('settingsPanel'),
+      closeSettings: document.getElementById('closeSettings'),
+      roomNameInput: document.getElementById('roomNameInput'),
+      availableMessage: document.getElementById('availableMessage'),
+      busyMessage: document.getElementById('busyMessage')
+    };
+
+    function loadSettings() {
+      const saved = localStorage.getItem('meetingRoomSettings');
+      if (saved) {
+        const s = JSON.parse(saved);
+        state.roomName = s.roomName || state.roomName;
+        state.availableMsg = s.availableMsg || state.availableMsg;
+        state.busyMsg = s.busyMsg || state.busyMsg;
+        state.isAvailable = s.isAvailable !== false;
+      }
+      els.roomNameInput.value = state.roomName;
+      els.availableMessage.value = state.availableMsg;
+      els.busyMessage.value = state.busyMsg;
+    }
+
+    function saveSettings() {
+      localStorage.setItem('meetingRoomSettings', JSON.stringify(state));
+    }
+
+    function updateDisplay() {
+      els.roomName.textContent = state.roomName;
+      if (state.isAvailable) {
+        els.statusDisplay.classList.add('available');
+        els.statusDisplay.classList.remove('busy');
+        els.statusIcon.textContent = '✓';
+        els.statusText.textContent = 'Available';
+        els.statusMessage.textContent = state.availableMsg;
+      } else {
+        els.statusDisplay.classList.remove('available');
+        els.statusDisplay.classList.add('busy');
+        els.statusIcon.textContent = '✕';
+        els.statusText.textContent = 'Busy';
+        els.statusMessage.textContent = state.busyMsg;
+      }
+    }
+
+    function updateTime() {
+      const now = new Date();
+      els.timeDisplay.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function toggleStatus() {
+      state.isAvailable = !state.isAvailable;
+      updateDisplay();
+      saveSettings();
+    }
+
+    function setAvailable() {
+      state.isAvailable = true;
+      updateDisplay();
+      saveSettings();
+    }
+
+    function setBusy() {
+      state.isAvailable = false;
+      updateDisplay();
+      saveSettings();
+    }
+
+    els.tapArea.addEventListener('click', toggleStatus);
+    els.availableBtn.addEventListener('click', setAvailable);
+    els.busyBtn.addEventListener('click', setBusy);
+    els.settingsBtn.addEventListener('click', () => els.settingsPanel.hidden = false);
+    els.closeSettings.addEventListener('click', () => {
+      state.roomName = els.roomNameInput.value || 'Conference Room';
+      state.availableMsg = els.availableMessage.value || 'Tap to mark as busy';
+      state.busyMsg = els.busyMessage.value || 'Meeting in progress';
+      saveSettings();
+      updateDisplay();
+      els.settingsPanel.hidden = true;
+    });
+
+    loadSettings();
+    updateDisplay();
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>

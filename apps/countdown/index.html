@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Countdown">
+  <title>Event Countdown</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      height: -webkit-fill-available;
+      padding: 20px;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      background: linear-gradient(180deg, #1a1a2e 0%, #0a0a14 100%);
+    }
+
+    .event-name {
+      font-size: 1.25rem;
+      font-weight: 300;
+      opacity: 0.7;
+      margin-bottom: 30px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .countdown-display {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 70px;
+    }
+
+    .countdown-value {
+      font-size: 3rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      background: linear-gradient(180deg, #fff 0%, #aaa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .countdown-label {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+      margin-top: 8px;
+    }
+
+    .separator {
+      font-size: 2.5rem;
+      font-weight: 300;
+      opacity: 0.3;
+      padding-top: 5px;
+    }
+
+    .event-date {
+      font-size: 0.875rem;
+      opacity: 0.4;
+      margin-bottom: 40px;
+    }
+
+    .completed-message {
+      font-size: 2rem;
+      text-align: center;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .settings-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      padding: 20px;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .settings-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .setting-group {
+      margin-bottom: 25px;
+    }
+
+    .setting-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .setting-input {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      background: #1c1c1e;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+    }
+
+    .setting-input::placeholder {
+      color: #666;
+    }
+
+    .preset-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .preset-btn {
+      padding: 10px 15px;
+      background: #1c1c1e;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    .preset-btn:active {
+      background: #333;
+    }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="event-name" id="eventName">Your Event</div>
+
+    <div class="countdown-display" id="countdownDisplay">
+      <div class="countdown-unit">
+        <div class="countdown-value" id="days">000</div>
+        <div class="countdown-label">Days</div>
+      </div>
+      <div class="separator">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="hours">00</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="separator">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="minutes">00</div>
+        <div class="countdown-label">Minutes</div>
+      </div>
+      <div class="separator">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="seconds">00</div>
+        <div class="countdown-label">Seconds</div>
+      </div>
+    </div>
+
+    <div class="completed-message" id="completedMessage" hidden>🎉 Event Started! 🎉</div>
+
+    <div class="event-date" id="eventDate">Set your event date</div>
+
+    <button class="settings-btn" id="settingsBtn">⚙️</button>
+
+    <div class="settings-panel" id="settingsPanel" hidden>
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSettings">✕</button>
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Event Name</label>
+        <input type="text" class="setting-input" id="eventNameInput" placeholder="Wedding Day" maxlength="40">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Event Date & Time</label>
+        <input type="datetime-local" class="setting-input" id="eventDateTime">
+      </div>
+      <div class="setting-group">
+        <label class="setting-label">Quick Presets</label>
+        <div class="preset-btns">
+          <button class="preset-btn" data-days="7">1 Week</button>
+          <button class="preset-btn" data-days="30">1 Month</button>
+          <button class="preset-btn" data-days="90">3 Months</button>
+          <button class="preset-btn" data-days="365">1 Year</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+
+    const state = {
+      eventName: 'Your Event',
+      targetDate: null
+    };
+
+    const els = {
+      eventName: document.getElementById('eventName'),
+      countdownDisplay: document.getElementById('countdownDisplay'),
+      completedMessage: document.getElementById('completedMessage'),
+      days: document.getElementById('days'),
+      hours: document.getElementById('hours'),
+      minutes: document.getElementById('minutes'),
+      seconds: document.getElementById('seconds'),
+      eventDate: document.getElementById('eventDate'),
+      settingsBtn: document.getElementById('settingsBtn'),
+      settingsPanel: document.getElementById('settingsPanel'),
+      closeSettings: document.getElementById('closeSettings'),
+      eventNameInput: document.getElementById('eventNameInput'),
+      eventDateTime: document.getElementById('eventDateTime')
+    };
+
+    function loadSettings() {
+      const saved = localStorage.getItem('countdownSettings');
+      if (saved) {
+        const s = JSON.parse(saved);
+        state.eventName = s.eventName || state.eventName;
+        state.targetDate = s.targetDate ? new Date(s.targetDate) : null;
+      }
+      els.eventNameInput.value = state.eventName;
+      if (state.targetDate) {
+        const local = new Date(state.targetDate.getTime() - state.targetDate.getTimezoneOffset() * 60000);
+        els.eventDateTime.value = local.toISOString().slice(0, 16);
+      }
+    }
+
+    function saveSettings() {
+      localStorage.setItem('countdownSettings', JSON.stringify({
+        eventName: state.eventName,
+        targetDate: state.targetDate ? state.targetDate.toISOString() : null
+      }));
+    }
+
+    function updateDisplay() {
+      els.eventName.textContent = state.eventName;
+
+      if (!state.targetDate) {
+        els.days.textContent = '---';
+        els.hours.textContent = '--';
+        els.minutes.textContent = '--';
+        els.seconds.textContent = '--';
+        els.eventDate.textContent = 'Set your event date';
+        return;
+      }
+
+      const now = new Date();
+      const diff = state.targetDate - now;
+
+      if (diff <= 0) {
+        els.countdownDisplay.hidden = true;
+        els.completedMessage.hidden = false;
+        els.eventDate.textContent = 'Event started!';
+        return;
+      }
+
+      els.countdownDisplay.hidden = false;
+      els.completedMessage.hidden = true;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      els.days.textContent = String(days).padStart(3, '0');
+      els.hours.textContent = String(hours).padStart(2, '0');
+      els.minutes.textContent = String(minutes).padStart(2, '0');
+      els.seconds.textContent = String(seconds).padStart(2, '0');
+
+      els.eventDate.textContent = state.targetDate.toLocaleDateString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    function applySettings() {
+      state.eventName = els.eventNameInput.value || 'Your Event';
+      if (els.eventDateTime.value) {
+        state.targetDate = new Date(els.eventDateTime.value);
+      }
+      saveSettings();
+      updateDisplay();
+    }
+
+    els.settingsBtn.addEventListener('click', () => els.settingsPanel.hidden = false);
+    els.closeSettings.addEventListener('click', () => {
+      applySettings();
+      els.settingsPanel.hidden = true;
+    });
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const days = parseInt(btn.dataset.days);
+        const target = new Date();
+        target.setDate(target.getDate() + days);
+        target.setHours(0, 0, 0, 0);
+        const local = new Date(target.getTime() - target.getTimezoneOffset() * 60000);
+        els.eventDateTime.value = local.toISOString().slice(0, 16);
+      });
+    });
+
+    loadSettings();
+    updateDisplay();
+    setInterval(updateDisplay, 1000);
+  </script>
+</body>
+</html>

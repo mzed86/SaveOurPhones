@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="WiFi QR">
+  <title>WiFi QR Code</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📶</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      height: -webkit-fill-available;
+      padding: 30px;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+    }
+
+    .title {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+      margin-bottom: 20px;
+    }
+
+    .qr-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 20px;
+      margin-bottom: 25px;
+    }
+
+    #qrcode {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #qrcode canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .placeholder-qr {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    .network-info {
+      text-align: center;
+    }
+
+    .network-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .network-hint {
+      font-size: 0.875rem;
+      opacity: 0.5;
+    }
+
+    .settings-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      padding: 20px;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .settings-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .setting-group {
+      margin-bottom: 25px;
+    }
+
+    .setting-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .setting-input {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      background: #1c1c1e;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+    }
+
+    .setting-input::placeholder {
+      color: #666;
+    }
+
+    .setting-select {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      background: #1c1c1e;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .setting-hint {
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+    }
+
+    .toggle {
+      appearance: none;
+      width: 51px;
+      height: 31px;
+      background: #39393d;
+      border-radius: 16px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle:checked {
+      background: #34c759;
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 27px;
+      height: 27px;
+      background: #fff;
+      border-radius: 14px;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+
+    .toggle:checked::after {
+      transform: translateX(20px);
+    }
+
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="title">Scan to Connect</div>
+
+    <div class="qr-container">
+      <div id="qrcode">
+        <div class="placeholder-qr">Configure WiFi in settings</div>
+      </div>
+    </div>
+
+    <div class="network-info">
+      <div class="network-name" id="networkName">Guest WiFi</div>
+      <div class="network-hint" id="networkHint">Point camera at QR code</div>
+    </div>
+
+    <button class="settings-btn" id="settingsBtn">⚙️</button>
+
+    <div class="settings-panel" id="settingsPanel" hidden>
+      <div class="settings-header">
+        <h2>WiFi Settings</h2>
+        <button class="close-btn" id="closeSettings">✕</button>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">Network Name (SSID)</label>
+        <input type="text" class="setting-input" id="ssidInput" placeholder="MyWiFiNetwork" maxlength="32">
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">Password</label>
+        <input type="password" class="setting-input" id="passwordInput" placeholder="Enter password">
+        <div class="setting-row" style="margin-top: 10px;">
+          <span>Show password</span>
+          <input type="checkbox" id="showPassword" class="toggle">
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">Security Type</label>
+        <select class="setting-select" id="securityType">
+          <option value="WPA">WPA/WPA2/WPA3</option>
+          <option value="WEP">WEP</option>
+          <option value="nopass">None (Open)</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label class="setting-label">Options</label>
+        <div class="setting-row">
+          <span>Hidden network</span>
+          <input type="checkbox" id="hiddenNetwork" class="toggle">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Library (lightweight, ~4KB) -->
+  <script>
+    // Minimal QR Code generator
+    var QRCode=function(){function a(a){this.mode=c.MODE_8BIT_BYTE;this.data=a;this.parsedData=[];for(var b=[],d=0;d<this.data.length;d++){var e=this.data.charCodeAt(d);e>65536?(b[0]=240|(e&1835008)>>>18,b[1]=128|(e&258048)>>>12,b[2]=128|(e&4032)>>>6,b[3]=128|e&63):e>2048?(b[0]=224|(e&61440)>>>12,b[1]=128|(e&4032)>>>6,b[2]=128|e&63):e>128?(b[0]=192|(e&1984)>>>6,b[1]=128|e&63):b[0]=e;for(var f=0;f<b.length;f++)this.parsedData.push(b[f]);b=[]}}function b(a,b){this.typeNumber=a;this.errorCorrectLevel=b;this.modules=null;this.moduleCount=0;this.dataCache=null;this.dataList=[]}function i(a,b){if(a.length==undefined)throw Error(a.length+"/"+b);for(var c=0;c<a.length&&a[c]==0;)c++;this.num=Array(a.length-c+b);for(var d=0;d<a.length-c;d++)this.num[d]=a[c+d]}function j(a,b){this.totalCount=a;this.dataCount=b}function k(){this.buffer=[];this.length=0}a.prototype={getLength:function(){return this.parsedData.length},write:function(a){for(var b=0;b<this.parsedData.length;b++)a.put(this.parsedData[b],8)}};b.prototype={addData:function(b){this.dataList.push(new a(b));this.dataCache=null},isDark:function(a,b){if(a<0||this.moduleCount<=a||b<0||this.moduleCount<=b)throw Error(a+","+b);return this.modules[a][b]},getModuleCount:function(){return this.moduleCount},make:function(){this.makeImpl(!1,this.getBestMaskPattern())},makeImpl:function(a,c){this.moduleCount=4*this.typeNumber+17;this.modules=Array(this.moduleCount);for(var d=0;d<this.moduleCount;d++){this.modules[d]=Array(this.moduleCount);for(var e=0;e<this.moduleCount;e++)this.modules[d][e]=null}this.setupPositionProbePattern(0,0);this.setupPositionProbePattern(this.moduleCount-7,0);this.setupPositionProbePattern(0,this.moduleCount-7);this.setupPositionAdjustPattern();this.setupTimingPattern();this.setupTypeInfo(a,c);this.typeNumber>=7&&this.setupTypeNumber(a);this.dataCache==null&&(this.dataCache=b.createData(this.typeNumber,this.errorCorrectLevel,this.dataList));this.mapData(this.dataCache,c)},setupPositionProbePattern:function(a,b){for(var c=-1;c<=7;c++)if(!(a+c<=-1||this.moduleCount<=a+c))for(var d=-1;d<=7;d++)b+d<=-1||this.moduleCount<=b+d||(this.modules[a+c][b+d]=0<=c&&c<=6&&(d==0||d==6)||0<=d&&d<=6&&(c==0||c==6)||2<=c&&c<=4&&2<=d&&d<=4?!0:!1)},getBestMaskPattern:function(){for(var a=0,b=0,c=0;c<8;c++){this.makeImpl(!0,c);var d=f.getLostPoint(this);if(c==0||a>d)a=d,b=c}return b},setupTimingPattern:function(){for(var a=8;a<this.moduleCount-8;a++)this.modules[a][6]==null&&(this.modules[a][6]=a%2==0),this.modules[6][a]==null&&(this.modules[6][a]=a%2==0)},setupPositionAdjustPattern:function(){for(var a=f.getPatternPosition(this.typeNumber),b=0;b<a.length;b++)for(var c=0;c<a.length;c++){var d=a[b],e=a[c];if(this.modules[d][e]==null)for(var g=-2;g<=2;g++)for(var h=-2;h<=2;h++)this.modules[d+g][e+h]=g==-2||g==2||h==-2||h==2||g==0&&h==0?!0:!1}},setupTypeNumber:function(a){for(var b=f.getBCHTypeNumber(this.typeNumber),c=0;c<18;c++){var d=!a&&(b>>c&1)==1;this.modules[Math.floor(c/3)][c%3+this.moduleCount-8-3]=d}for(c=0;c<18;c++)d=!a&&(b>>c&1)==1,this.modules[c%3+this.moduleCount-8-3][Math.floor(c/3)]=d},setupTypeInfo:function(a,b){for(var c=f.getBCHTypeInfo(this.errorCorrectLevel<<3|b),d=0;d<15;d++){var e=!a&&(c>>d&1)==1;d<6?this.modules[d][8]=e:d<8?this.modules[d+1][8]=e:this.modules[this.moduleCount-15+d][8]=e}for(d=0;d<15;d++)e=!a&&(c>>d&1)==1,d<8?this.modules[8][this.moduleCount-d-1]=e:d<9?this.modules[8][15-d-1+1]=e:this.modules[8][15-d-1]=e;this.modules[this.moduleCount-8][8]=!a},mapData:function(a,b){for(var c=-1,d=this.moduleCount-1,e=7,g=0,h=this.moduleCount-1;h>0;h-=2)for(h==6&&h--;;){for(var i=0;i<2;i++)if(this.modules[d][h-i]==null){var j=!1;g<a.length&&(j=(a[g]>>>e&1)==1);f.getMask(b,d,h-i)&&(j=!j);this.modules[d][h-i]=j;e--;e==-1&&(g++,e=7)}d+=c;if(d<0||this.moduleCount<=d){d-=c;c=-c;break}}}};b.PAD0=236;b.PAD1=17;b.createData=function(a,c,d){for(var e=j.getRSBlocks(a,c),g=new k,h=0;h<d.length;h++){var i=d[h];g.put(i.mode,4);g.put(i.getLength(),f.getLengthInBits(i.mode,a));i.write(g)}for(h=a=0;h<e.length;h++)a+=e[h].dataCount;if(g.getLengthInBits()>8*a)throw Error("code length overflow. ("+g.getLengthInBits()+">"+8*a+")");for(g.getLengthInBits()+4<=8*a&&g.put(0,4);g.getLengthInBits()%8!=0;)g.putBit(!1);for(;;){if(g.getLengthInBits()>=8*a)break;g.put(b.PAD0,8);if(g.getLengthInBits()>=8*a)break;g.put(b.PAD1,8)}return b.createBytes(g,e)};b.createBytes=function(a,b){for(var c=0,d=0,e=0,g=Array(b.length),h=Array(b.length),j=0;j<b.length;j++){var k=b[j].dataCount,l=b[j].totalCount-k;d=Math.max(d,k);e=Math.max(e,l);g[j]=Array(k);for(var m=0;m<g[j].length;m++)g[j][m]=255&a.buffer[m+c];c+=k;m=f.getErrorCorrectPolynomial(l);k=(new i(g[j],m.getLength()-1)).mod(m);h[j]=Array(m.getLength()-1);for(m=0;m<h[j].length;m++)l=m+k.getLength()-h[j].length,h[j][m]=l>=0?k.get(l):0}for(m=a=0;m<b.length;m++)a+=b[m].totalCount;a=Array(a);for(m=c=0;m<d;m++)for(j=0;j<b.length;j++)m<g[j].length&&(a[c++]=g[j][m]);for(m=0;m<e;m++)for(j=0;j<b.length;j++)m<h[j].length&&(a[c++]=h[j][m]);return a};var c={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8},f={PATTERN_POSITION_TABLE:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:1335,G18:7973,G15_MASK:21522,getBCHTypeInfo:function(a){for(var b=a<<10;f.getBCHDigit(b)-f.getBCHDigit(f.G15)>=0;)b^=f.G15<<f.getBCHDigit(b)-f.getBCHDigit(f.G15);return(a<<10|b)^f.G15_MASK},getBCHTypeNumber:function(a){for(var b=a<<12;f.getBCHDigit(b)-f.getBCHDigit(f.G18)>=0;)b^=f.G18<<f.getBCHDigit(b)-f.getBCHDigit(f.G18);return a<<12|b},getBCHDigit:function(a){for(var b=0;a!=0;)b++,a>>>=1;return b},getPatternPosition:function(a){return f.PATTERN_POSITION_TABLE[a-1]},getMask:function(a,b,c){switch(a){case 0:return(b+c)%2==0;case 1:return b%2==0;case 2:return c%3==0;case 3:return(b+c)%3==0;case 4:return(Math.floor(b/2)+Math.floor(c/3))%2==0;case 5:return b*c%2+b*c%3==0;case 6:return(b*c%2+b*c%3)%2==0;case 7:return(b*c%3+(b+c)%2)%2==0;default:throw Error("bad maskPattern:"+a)}},getErrorCorrectPolynomial:function(a){for(var b=new i([1],0),c=0;c<a;c++)b=b.multiply(new i([1,g.gexp(c)],0));return b},getLengthInBits:function(a,b){if(1<=b&&b<10)switch(a){case c.MODE_NUMBER:return 10;case c.MODE_ALPHA_NUM:return 9;case c.MODE_8BIT_BYTE:case c.MODE_KANJI:return 8;default:throw Error("mode:"+a)}else if(b<27)switch(a){case c.MODE_NUMBER:return 12;case c.MODE_ALPHA_NUM:return 11;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 10;default:throw Error("mode:"+a)}else if(b<41)switch(a){case c.MODE_NUMBER:return 14;case c.MODE_ALPHA_NUM:return 13;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 12;default:throw Error("mode:"+a)}else throw Error("type:"+b)},getLostPoint:function(a){for(var b=a.getModuleCount(),c=0,d=0;d<b;d++)for(var e=0;e<b;e++){for(var f=0,g=a.isDark(d,e),h=-1;h<=1;h++)if(!(d+h<0||b<=d+h))for(var i=-1;i<=1;i++)e+i<0||b<=e+i||h==0&&i==0||g==a.isDark(d+h,e+i)&&f++;f>5&&(c+=3+f-5)}for(d=0;d<b-1;d++)for(e=0;e<b-1;e++)if(f=0,a.isDark(d,e)&&f++,a.isDark(d+1,e)&&f++,a.isDark(d,e+1)&&f++,a.isDark(d+1,e+1)&&f++,f==0||f==4)c+=3;for(d=0;d<b;d++)for(e=0;e<b-6;e++)a.isDark(d,e)&&!a.isDark(d,e+1)&&a.isDark(d,e+2)&&a.isDark(d,e+3)&&a.isDark(d,e+4)&&!a.isDark(d,e+5)&&a.isDark(d,e+6)&&(c+=40);for(e=0;e<b;e++)for(d=0;d<b-6;d++)a.isDark(d,e)&&!a.isDark(d+1,e)&&a.isDark(d+2,e)&&a.isDark(d+3,e)&&a.isDark(d+4,e)&&!a.isDark(d+5,e)&&a.isDark(d+6,e)&&(c+=40);for(e=f=0;e<b;e++)for(d=0;d<b;d++)a.isDark(d,e)&&f++;return c+=10*(Math.abs(100*f/b/b-50)/5)}},g={glog:function(a){if(a<1)throw Error("glog("+a+")");return g.LOG_TABLE[a]},gexp:function(a){for(;a<0;)a+=255;for(;a>=256;)a-=255;return g.EXP_TABLE[a]},EXP_TABLE:Array(256),LOG_TABLE:Array(256)},h=0;h<8;h++)g.EXP_TABLE[h]=1<<h;for(h=8;h<256;h++)g.EXP_TABLE[h]=g.EXP_TABLE[h-4]^g.EXP_TABLE[h-5]^g.EXP_TABLE[h-6]^g.EXP_TABLE[h-8];for(h=0;h<255;h++)g.LOG_TABLE[g.EXP_TABLE[h]]=h;i.prototype={get:function(a){return this.num[a]},getLength:function(){return this.num.length},multiply:function(a){for(var b=Array(this.getLength()+a.getLength()-1),c=0;c<this.getLength();c++)for(var d=0;d<a.getLength();d++)b[c+d]^=g.gexp(g.glog(this.get(c))+g.glog(a.get(d)));return new i(b,0)},mod:function(a){if(this.getLength()-a.getLength()<0)return this;for(var b=g.glog(this.get(0))-g.glog(a.get(0)),c=Array(this.getLength()),d=0;d<this.getLength();d++)c[d]=this.get(d);for(d=0;d<a.getLength();d++)c[d]^=g.gexp(g.glog(a.get(d))+b);return(new i(c,0)).mod(a)}};j.RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]];j.getRSBlocks=function(a,b){var c=j.getRsBlockTable(a,b);if(c==undefined)throw Error("bad rs block @ typeNumber:"+a+"/errorCorrectLevel:"+b);for(var d=c.length/3,e=[],f=0;f<d;f++)for(var g=c[3*f+0],h=c[3*f+1],i=c[3*f+2],k=0;k<g;k++)e.push(new j(h,i));return e};j.getRsBlockTable=function(a,b){switch(b){case d.L:return j.RS_BLOCK_TABLE[4*(a-1)+0];case d.M:return j.RS_BLOCK_TABLE[4*(a-1)+1];case d.Q:return j.RS_BLOCK_TABLE[4*(a-1)+2];case d.H:return j.RS_BLOCK_TABLE[4*(a-1)+3];default:return undefined}};k.prototype={get:function(a){return(this.buffer[Math.floor(a/8)]>>>7-a%8&1)==1},put:function(a,b){for(var c=0;c<b;c++)this.putBit((a>>>b-c-1&1)==1)},getLengthInBits:function(){return this.length},putBit:function(a){var b=Math.floor(this.length/8);this.buffer.length<=b&&this.buffer.push(0);a&&(this.buffer[b]|=128>>>this.length%8);this.length++}};var d={L:1,M:0,Q:3,H:2};function e(a,c){var f=4,g=d.L;if(typeof a=="string"&&(a={text:a}),a.text===undefined)throw Error("No text given");c=c||document.createElement("div");var h=document.createElement("canvas");c.appendChild(h);var i=a.text,j=a.size||200;for(var k=new b(f,g),l=i,m=!1;;){k.addData(l);try{k.make();m=!0}catch(n){if(f<40)k=new b(++f,g);else throw n}if(m)break}var o=k.getModuleCount(),p=j/o;h.width=j;h.height=j;var q=h.getContext("2d");q.fillStyle="#ffffff";q.fillRect(0,0,j,j);q.fillStyle="#000000";for(var r=0;r<o;r++)for(var s=0;s<o;s++)k.isDark(r,s)&&q.fillRect(s*p,r*p,p,p);return c}window.QRCode={toCanvas:e}}();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+
+    const state = {
+      ssid: '',
+      password: '',
+      security: 'WPA',
+      hidden: false
+    };
+
+    const els = {
+      qrcode: document.getElementById('qrcode'),
+      networkName: document.getElementById('networkName'),
+      networkHint: document.getElementById('networkHint'),
+      settingsBtn: document.getElementById('settingsBtn'),
+      settingsPanel: document.getElementById('settingsPanel'),
+      closeSettings: document.getElementById('closeSettings'),
+      ssidInput: document.getElementById('ssidInput'),
+      passwordInput: document.getElementById('passwordInput'),
+      showPassword: document.getElementById('showPassword'),
+      securityType: document.getElementById('securityType'),
+      hiddenNetwork: document.getElementById('hiddenNetwork')
+    };
+
+    function loadSettings() {
+      const saved = localStorage.getItem('wifiQRSettings');
+      if (saved) {
+        const s = JSON.parse(saved);
+        state.ssid = s.ssid || '';
+        state.password = s.password || '';
+        state.security = s.security || 'WPA';
+        state.hidden = s.hidden || false;
+      }
+      els.ssidInput.value = state.ssid;
+      els.passwordInput.value = state.password;
+      els.securityType.value = state.security;
+      els.hiddenNetwork.checked = state.hidden;
+    }
+
+    function saveSettings() {
+      localStorage.setItem('wifiQRSettings', JSON.stringify(state));
+    }
+
+    function escapeString(str) {
+      return str.replace(/\\/g, '\\\\')
+                .replace(/;/g, '\\;')
+                .replace(/,/g, '\\,')
+                .replace(/:/g, '\\:')
+                .replace(/"/g, '\\"');
+    }
+
+    function generateWiFiString() {
+      if (!state.ssid) return null;
+      const ssid = escapeString(state.ssid);
+      const pass = escapeString(state.password);
+      const hidden = state.hidden ? 'H:true;' : '';
+
+      if (state.security === 'nopass') {
+        return `WIFI:T:nopass;S:${ssid};${hidden};`;
+      }
+      return `WIFI:T:${state.security};S:${ssid};P:${pass};${hidden};`;
+    }
+
+    function updateDisplay() {
+      els.networkName.textContent = state.ssid || 'Guest WiFi';
+
+      const wifiString = generateWiFiString();
+      if (wifiString) {
+        els.qrcode.innerHTML = '';
+        QRCode.toCanvas(wifiString, els.qrcode);
+        els.networkHint.textContent = 'Point camera at QR code';
+      } else {
+        els.qrcode.innerHTML = '<div class="placeholder-qr">Configure WiFi in settings</div>';
+        els.networkHint.textContent = 'Tap ⚙️ to configure';
+      }
+    }
+
+    function applySettings() {
+      state.ssid = els.ssidInput.value;
+      state.password = els.passwordInput.value;
+      state.security = els.securityType.value;
+      state.hidden = els.hiddenNetwork.checked;
+      saveSettings();
+      updateDisplay();
+    }
+
+    els.showPassword.addEventListener('change', () => {
+      els.passwordInput.type = els.showPassword.checked ? 'text' : 'password';
+    });
+
+    els.settingsBtn.addEventListener('click', () => els.settingsPanel.hidden = false);
+    els.closeSettings.addEventListener('click', () => {
+      applySettings();
+      els.settingsPanel.hidden = true;
+    });
+
+    loadSettings();
+    updateDisplay();
+  </script>
+</body>
+</html>
