@@ -248,10 +248,10 @@
 
   function encodeDataWithEC(utf8Bytes, version, ecLevel) {
     // Simplified encoding - byte mode
-    const totalBytes = getDataCapacity(version, ecLevel);
-    const ecBytes = getECBytes(version, ecLevel);
+    const dataCapacity = getDataCapacity(version, ecLevel);  // Data codewords capacity
+    const ecBytes = getECBytes(version, ecLevel);            // EC codewords count
 
-    const data = new Uint8Array(totalBytes);
+    const data = new Uint8Array(dataCapacity);
     let pos = 0;
 
     // Mode indicator (4 bits) + character count (8 bits for version 1-9, 16 for 10+)
@@ -275,20 +275,20 @@
     }
 
     // Add terminator and padding
-    if (pos < totalBytes) data[pos++] = 0;
+    if (pos < dataCapacity) data[pos++] = 0;
     let padToggle = true;
-    while (pos < totalBytes) {
+    while (pos < dataCapacity) {
       data[pos++] = padToggle ? 0xec : 0x11;
       padToggle = !padToggle;
     }
 
-    // Generate error correction
-    const ecData = generateEC(data.slice(0, totalBytes - ecBytes), ecBytes);
+    // Generate error correction for all data codewords
+    const ecData = generateEC(data, ecBytes);
 
-    // Interleave data and EC (simplified for single block)
-    const result = new Uint8Array(totalBytes);
-    result.set(data.slice(0, totalBytes - ecBytes));
-    result.set(ecData, totalBytes - ecBytes);
+    // Combine data and EC codewords
+    const result = new Uint8Array(dataCapacity + ecBytes);
+    result.set(data);
+    result.set(ecData, dataCapacity);
 
     return result;
   }
