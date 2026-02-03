@@ -73,6 +73,11 @@ SaveOurPhones is a website hosting a curated collection of single-purpose web ap
 - **Plant Care Tracker**: Watering reminders
 - **Pomodoro Timer**: Focus/break intervals
 - **White Noise Machine**: Sleep sounds
+- **Meeting Room Display**: Mount outside rooms to show busy/free status
+- **Event Countdown**: Large countdown to weddings, vacations, launches
+- **Now Playing Display**: Show current music with album art
+- **Daily Dashboard**: At-a-glance time, weather, and daily quote
+- **WiFi QR Code**: Display guest network credentials as scannable code
 
 ## Development Guidelines
 
