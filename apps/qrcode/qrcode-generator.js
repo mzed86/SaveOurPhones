@@ -134,20 +134,23 @@
     const version = getVersion(utf8Bytes.length + 3);
     const size = getModuleCount(version);
 
-    // Create matrix
+    // Create matrix and reserved tracking
     const matrix = [];
+    const reserved = [];
     for (let i = 0; i < size; i++) {
       matrix[i] = new Array(size).fill(null);
+      reserved[i] = new Array(size).fill(false);
     }
 
     // Add finder patterns
-    addFinderPattern(matrix, 0, 0);
-    addFinderPattern(matrix, size - 7, 0);
-    addFinderPattern(matrix, 0, size - 7);
+    addFinderPattern(matrix, reserved, 0, 0, size);
+    addFinderPattern(matrix, reserved, size - 7, 0, size);
+    addFinderPattern(matrix, reserved, 0, size - 7, size);
 
     // Add timing patterns
     for (let i = 8; i < size - 8; i++) {
       matrix[6][i] = matrix[i][6] = i % 2 === 0;
+      reserved[6][i] = reserved[i][6] = true;
     }
 
     // Add alignment patterns for version > 1
@@ -158,7 +161,7 @@
           const x = positions[i];
           const y = positions[j];
           if (matrix[y][x] === null) {
-            addAlignmentPattern(matrix, x, y);
+            addAlignmentPattern(matrix, reserved, x, y);
           }
         }
       }
@@ -170,9 +173,13 @@
       if (matrix[i][8] === null) matrix[i][8] = false;
       if (matrix[8][size - 1 - i] === null) matrix[8][size - 1 - i] = false;
       if (matrix[size - 1 - i][8] === null) matrix[size - 1 - i][8] = false;
+      reserved[8][i] = reserved[i][8] = true;
+      reserved[8][size - 1 - i] = reserved[size - 1 - i][8] = true;
     }
     matrix[8][8] = false;
+    reserved[8][8] = true;
     matrix[size - 8][8] = true; // Dark module
+    reserved[size - 8][8] = true;
 
     // Reserve version info for version >= 7
     if (version >= 7) {
@@ -180,6 +187,8 @@
         for (let j = 0; j < 3; j++) {
           matrix[size - 11 + j][i] = false;
           matrix[i][size - 11 + j] = false;
+          reserved[size - 11 + j][i] = true;
+          reserved[i][size - 11 + j] = true;
         }
       }
     }
@@ -190,8 +199,8 @@
     // Place data in matrix
     placeData(matrix, data, size);
 
-    // Apply mask (using mask 0 for simplicity)
-    applyMask(matrix, 0, size);
+    // Apply mask (using mask 0 for simplicity) - use reserved to avoid masking function patterns
+    applyMask(matrix, reserved, 0, size);
 
     // Add format info
     addFormatInfo(matrix, EC_LEVELS[ecLevel], 0, size);
@@ -204,12 +213,12 @@
     return matrix;
   }
 
-  function addFinderPattern(matrix, x, y) {
+  function addFinderPattern(matrix, reserved, x, y, size) {
     for (let dy = -1; dy <= 7; dy++) {
       for (let dx = -1; dx <= 7; dx++) {
         const px = x + dx;
         const py = y + dy;
-        if (px >= 0 && py >= 0 && px < matrix.length && py < matrix.length) {
+        if (px >= 0 && py >= 0 && px < size && py < size) {
           if (dx === -1 || dx === 7 || dy === -1 || dy === 7) {
             matrix[py][px] = false;
           } else if (dx === 0 || dx === 6 || dy === 0 || dy === 6) {
@@ -219,17 +228,19 @@
           } else {
             matrix[py][px] = false;
           }
+          reserved[py][px] = true;
         }
       }
     }
   }
 
-  function addAlignmentPattern(matrix, x, y) {
+  function addAlignmentPattern(matrix, reserved, x, y) {
     for (let dy = -2; dy <= 2; dy++) {
       for (let dx = -2; dx <= 2; dx++) {
         const absX = Math.abs(dx);
         const absY = Math.abs(dy);
         matrix[y + dy][x + dx] = (absX === 2 || absY === 2 || (dx === 0 && dy === 0));
+        reserved[y + dy][x + dx] = true;
       }
     }
   }
@@ -355,10 +366,11 @@
     }
   }
 
-  function applyMask(matrix, maskNum, size) {
+  function applyMask(matrix, reserved, maskNum, size) {
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
-        if (isDataModule(matrix, x, y, size)) {
+        // Only apply mask to data modules (not reserved/function pattern modules)
+        if (!reserved[y][x]) {
           let mask = false;
           switch (maskNum) {
             case 0: mask = (y + x) % 2 === 0; break;
@@ -374,19 +386,6 @@
         }
       }
     }
-  }
-
-  function isDataModule(matrix, x, y, size) {
-    // Check if this is a data module (not part of function patterns)
-    // Finder patterns
-    if (x < 9 && y < 9) return false;
-    if (x < 9 && y >= size - 8) return false;
-    if (x >= size - 8 && y < 9) return false;
-
-    // Timing patterns
-    if (x === 6 || y === 6) return false;
-
-    return true;
   }
 
   function addFormatInfo(matrix, ecLevel, mask, size) {
