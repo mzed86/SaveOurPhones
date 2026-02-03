@@ -122,6 +122,51 @@
   const cancelCustomBtn = document.getElementById('cancel-custom');
   const rollCustomBtn = document.getElementById('roll-custom');
 
+  // Dice shapes for different types
+  const diceShapes = {
+    4: '▲',
+    6: '⬜',
+    8: '◆',
+    10: '⬠',
+    12: '⬡',
+    20: '△',
+    100: '%'
+  };
+
+  // Get dice shape for sides
+  function getDiceShape(sides) {
+    return diceShapes[sides] || '⬜';
+  }
+
+  // Create a visual die element
+  function createDie(sides, finalValue, index, totalDice) {
+    const die = document.createElement('div');
+    die.className = 'rolling-die';
+    die.innerHTML = `<span class="die-face">${getDiceShape(sides)}</span><span class="die-value">${finalValue}</span>`;
+
+    // Random starting position and animation
+    const startX = Math.random() * 60 - 30;
+    const startY = -50 - Math.random() * 30;
+    const rotation = Math.random() * 720 - 360;
+    const delay = index * 0.05;
+
+    die.style.setProperty('--start-x', `${startX}px`);
+    die.style.setProperty('--start-y', `${startY}px`);
+    die.style.setProperty('--rotation', `${rotation}deg`);
+    die.style.setProperty('--delay', `${delay}s`);
+
+    // Calculate final position (spread them out)
+    const angle = (index / totalDice) * Math.PI * 2 + Math.random() * 0.5;
+    const radius = totalDice > 1 ? 25 + Math.random() * 15 : 0;
+    const finalX = Math.cos(angle) * radius;
+    const finalY = Math.sin(angle) * radius * 0.5;
+
+    die.style.setProperty('--final-x', `${finalX}px`);
+    die.style.setProperty('--final-y', `${finalY}px`);
+
+    return die;
+  }
+
   // Roll dice
   function roll(sides) {
     const rolls = [];
@@ -136,36 +181,60 @@
     const isCritical = sides === 20 && quantity === 1 && rolls[0] === 20;
     const isFumble = sides === 20 && quantity === 1 && rolls[0] === 1;
 
+    // Get arena and result elements
+    const diceArena = document.getElementById('dice-arena');
+    const resultDisplay = document.getElementById('result-display');
+
+    // Clear previous dice and hide result
+    diceArena.innerHTML = '';
+    resultValue.textContent = '';
+    resultValue.classList.remove('critical', 'fumble', 'bounce', 'critical-glow', 'fumble-shake', 'visible');
+    resultBreakdown.textContent = '';
+    resultDisplay.classList.add('active', 'rolling');
+
     // Play rolling sound
     playSound('roll');
 
-    // Animate result - cycle through random numbers
-    resultValue.classList.add('rolling');
-    resultValue.classList.remove('critical', 'fumble', 'bounce', 'critical-glow', 'fumble-shake');
-    resultBreakdown.textContent = '';
+    // Create visual dice
+    rolls.forEach((value, i) => {
+      const die = createDie(sides, value, i, quantity);
+      diceArena.appendChild(die);
+    });
 
-    const resultDisplay = document.getElementById('result-display');
-    resultDisplay.classList.add('active');
+    // Animate dice tumbling
+    requestAnimationFrame(() => {
+      diceArena.classList.add('tumbling');
+    });
 
-    // Animate cycling numbers
-    let cycleCount = 0;
-    const maxCycles = 12;
-    const cycleInterval = setInterval(() => {
-      const randomNum = Math.floor(Math.random() * sides) + 1;
-      const displayNum = quantity > 1 ? randomNum * quantity : randomNum;
-      resultValue.textContent = displayNum + modifier;
-      cycleCount++;
+    // Rolling duration
+    const rollDuration = 800 + quantity * 50;
 
-      if (cycleCount >= maxCycles) {
-        clearInterval(cycleInterval);
+    // After rolling, show the dice settling
+    setTimeout(() => {
+      diceArena.classList.remove('tumbling');
+      diceArena.classList.add('settled');
+      playSound('land');
+
+      // Show values on dice
+      const dice = diceArena.querySelectorAll('.rolling-die');
+      dice.forEach(die => {
+        die.classList.add('show-value');
+      });
+    }, rollDuration);
+
+    // After dice settle, show total
+    setTimeout(() => {
+      // Fade out dice
+      diceArena.classList.add('fading');
+
+      setTimeout(() => {
+        diceArena.classList.remove('tumbling', 'settled', 'fading');
+        diceArena.innerHTML = '';
+        resultDisplay.classList.remove('rolling');
 
         // Show final result
-        resultValue.classList.remove('rolling');
-        resultValue.classList.add('bounce');
         resultValue.textContent = total;
-
-        // Play landing sound
-        playSound('land');
+        resultValue.classList.add('visible', 'bounce');
 
         if (isCritical) {
           resultValue.classList.add('critical', 'critical-glow');
@@ -211,8 +280,8 @@
           resultDisplay.classList.remove('active');
           resultValue.classList.remove('bounce');
         }, 500);
-      }
-    }, 50);
+      }, 300);
+    }, rollDuration + 600);
   }
 
   // Add to history
