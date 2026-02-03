@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>White Noise</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text x='50' y='62' text-anchor='middle' font-size='50'>🌙</text></svg>">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>White Noise</h1>
+      <div id="timer-display" class="timer-display hidden">
+        <span id="timer-value">--:--</span>
+      </div>
+    </header>
+
+    <main>
+      <div class="sound-grid">
+        <button class="sound-btn" data-sound="white">
+          <div class="sound-icon">〰️</div>
+          <span>White</span>
+        </button>
+        <button class="sound-btn" data-sound="pink">
+          <div class="sound-icon">🌸</div>
+          <span>Pink</span>
+        </button>
+        <button class="sound-btn" data-sound="brown">
+          <div class="sound-icon">🟤</div>
+          <span>Brown</span>
+        </button>
+        <button class="sound-btn" data-sound="rain">
+          <div class="sound-icon">🌧️</div>
+          <span>Rain</span>
+        </button>
+        <button class="sound-btn" data-sound="ocean">
+          <div class="sound-icon">🌊</div>
+          <span>Ocean</span>
+        </button>
+        <button class="sound-btn" data-sound="wind">
+          <div class="sound-icon">💨</div>
+          <span>Wind</span>
+        </button>
+        <button class="sound-btn" data-sound="fire">
+          <div class="sound-icon">🔥</div>
+          <span>Fire</span>
+        </button>
+        <button class="sound-btn" data-sound="forest">
+          <div class="sound-icon">🌲</div>
+          <span>Forest</span>
+        </button>
+      </div>
+
+      <div class="controls">
+        <div class="volume-control">
+          <label for="volume">Volume</label>
+          <input type="range" id="volume" min="0" max="100" value="50">
+          <span id="volume-value">50%</span>
+        </div>
+
+        <div class="timer-control">
+          <label>Sleep Timer</label>
+          <div class="timer-buttons">
+            <button class="timer-btn" data-minutes="0">Off</button>
+            <button class="timer-btn" data-minutes="15">15m</button>
+            <button class="timer-btn" data-minutes="30">30m</button>
+            <button class="timer-btn" data-minutes="60">1h</button>
+            <button class="timer-btn" data-minutes="120">2h</button>
+          </div>
+        </div>
+
+        <div class="mix-control">
+          <label>
+            <input type="checkbox" id="allow-mix">
+            Allow mixing sounds
+          </label>
+        </div>
+      </div>
+
+      <button id="stop-all" class="stop-btn hidden">Stop All</button>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
