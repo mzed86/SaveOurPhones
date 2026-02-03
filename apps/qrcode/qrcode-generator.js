@@ -285,8 +285,9 @@
       data[pos++] = ((curr & 0x0f) << 4) | (next >> 4);
     }
 
-    // Add terminator and padding
-    if (pos < dataCapacity) data[pos++] = 0;
+    // Add pad codewords (0xEC 0x11 alternating) until capacity
+    // Note: terminator bits (0000) are already included in the last data byte
+    // from the encoding loop above (when next=0 for the last character)
     let padToggle = true;
     while (pos < dataCapacity) {
       data[pos++] = padToggle ? 0xec : 0x11;
@@ -391,22 +392,33 @@
   function addFormatInfo(matrix, ecLevel, mask, size) {
     const formatBits = getFormatBits(ecLevel, mask);
 
-    // Place format info
+    // Place format info around top-left finder (primary) and
+    // split between top-right and bottom-left finders (secondary)
     for (let i = 0; i < 15; i++) {
       const bit = (formatBits >> (14 - i)) & 1;
       const val = bit === 1;
 
+      // Primary format info around top-left finder
       if (i < 6) {
+        // Bits 0-5: column 8, rows 0-5
         matrix[i][8] = val;
       } else if (i < 8) {
+        // Bits 6-7: column 8, rows 7-8 (skip row 6 - timing)
         matrix[i + 1][8] = val;
+      } else if (i === 8) {
+        // Bit 8: row 8, column 7 (skip column 6 - timing)
+        matrix[8][7] = val;
       } else {
+        // Bits 9-14: row 8, columns 5-0
         matrix[8][14 - i] = val;
       }
 
+      // Secondary format info (top-right and bottom-left)
       if (i < 8) {
+        // Bits 0-7: row 8, columns (size-1) to (size-8)
         matrix[8][size - 1 - i] = val;
       } else {
+        // Bits 8-14: column 8, rows (size-7) to (size-1)
         matrix[size - 15 + i][8] = val;
       }
     }
