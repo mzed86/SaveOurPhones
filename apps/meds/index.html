@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Medications</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text x='50' y='62' text-anchor='middle' font-size='50'>💊</text></svg>">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Medications</h1>
+      <button id="add-med-btn" class="icon-btn" aria-label="Add medication">+</button>
+    </header>
+
+    <main>
+      <div class="date-nav">
+        <button id="prev-day" class="nav-btn">‹</button>
+        <span id="current-date">Today</span>
+        <button id="next-day" class="nav-btn">›</button>
+      </div>
+
+      <div id="meds-list" class="meds-list"></div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">💊</div>
+        <p>No medications tracked</p>
+        <button id="add-first-med" class="primary-btn">Add Medication</button>
+      </div>
+
+      <div id="summary" class="summary hidden">
+        <div class="summary-stat">
+          <span class="stat-number" id="taken-count">0</span>
+          <span class="stat-label">Taken</span>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-number" id="remaining-count">0</span>
+          <span class="stat-label">Remaining</span>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-number" id="streak-count">0</span>
+          <span class="stat-label">Day Streak</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="med-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2 id="modal-title">Add Medication</h2>
+
+        <label for="med-name">Medication Name</label>
+        <input type="text" id="med-name" placeholder="Aspirin">
+
+        <label for="med-dosage">Dosage</label>
+        <input type="text" id="med-dosage" placeholder="100mg">
+
+        <label>Schedule</label>
+        <div class="time-slots">
+          <label class="time-slot">
+            <input type="checkbox" value="morning" checked>
+            <span>🌅 Morning</span>
+          </label>
+          <label class="time-slot">
+            <input type="checkbox" value="afternoon">
+            <span>☀️ Afternoon</span>
+          </label>
+          <label class="time-slot">
+            <input type="checkbox" value="evening">
+            <span>🌆 Evening</span>
+          </label>
+          <label class="time-slot">
+            <input type="checkbox" value="night">
+            <span>🌙 Night</span>
+          </label>
+        </div>
+
+        <label for="med-notes">Notes (optional)</label>
+        <input type="text" id="med-notes" placeholder="Take with food">
+
+        <div class="modal-actions">
+          <button id="cancel-btn" class="secondary-btn">Cancel</button>
+          <button id="save-med-btn" class="primary-btn">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

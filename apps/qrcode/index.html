@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>QR Code</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text x='50' y='62' text-anchor='middle' font-size='50'>📱</text></svg>">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>QR Code Generator</h1>
+    </header>
+
+    <main>
+      <div class="tabs">
+        <button class="tab active" data-tab="text">Text</button>
+        <button class="tab" data-tab="url">URL</button>
+        <button class="tab" data-tab="wifi">WiFi</button>
+        <button class="tab" data-tab="contact">Contact</button>
+      </div>
+
+      <div class="tab-content active" id="text-tab">
+        <label for="text-input">Enter text:</label>
+        <textarea id="text-input" placeholder="Type any text here..." rows="3"></textarea>
+      </div>
+
+      <div class="tab-content" id="url-tab">
+        <label for="url-input">Enter URL:</label>
+        <input type="url" id="url-input" placeholder="https://example.com">
+      </div>
+
+      <div class="tab-content" id="wifi-tab">
+        <label for="wifi-ssid">Network Name (SSID):</label>
+        <input type="text" id="wifi-ssid" placeholder="MyWiFiNetwork">
+
+        <label for="wifi-password">Password:</label>
+        <div class="password-field">
+          <input type="password" id="wifi-password" placeholder="Password">
+          <button type="button" id="toggle-password" class="icon-btn" aria-label="Toggle password visibility">👁️</button>
+        </div>
+
+        <label for="wifi-security">Security:</label>
+        <select id="wifi-security">
+          <option value="WPA">WPA/WPA2</option>
+          <option value="WEP">WEP</option>
+          <option value="nopass">None (Open)</option>
+        </select>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="wifi-hidden">
+          Hidden network
+        </label>
+      </div>
+
+      <div class="tab-content" id="contact-tab">
+        <label for="contact-name">Name:</label>
+        <input type="text" id="contact-name" placeholder="John Doe">
+
+        <label for="contact-phone">Phone:</label>
+        <input type="tel" id="contact-phone" placeholder="+1 555 123 4567">
+
+        <label for="contact-email">Email:</label>
+        <input type="email" id="contact-email" placeholder="john@example.com">
+      </div>
+
+      <button id="generate-btn" class="primary-btn">Generate QR Code</button>
+
+      <div id="qr-container" class="qr-container hidden">
+        <canvas id="qr-canvas"></canvas>
+        <div class="qr-actions">
+          <button id="save-btn" class="action-btn">Save Image</button>
+          <button id="copy-btn" class="action-btn">Copy</button>
+        </div>
+      </div>
+
+      <div id="saved-codes" class="saved-codes">
+        <h3>Saved Codes</h3>
+        <div id="saved-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="qrcode-generator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

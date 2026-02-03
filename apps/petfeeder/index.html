@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Pet Feeder</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='20'/><text x='50' y='62' text-anchor='middle' font-size='50'>🐕</text></svg>">
+  <link rel="stylesheet" href="../../shared/styles/base.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Pet Feeder</h1>
+      <button id="add-pet-btn" class="icon-btn" aria-label="Add pet">+</button>
+    </header>
+
+    <main>
+      <div id="pets-list" class="pets-list"></div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">🐾</div>
+        <p>No pets added yet</p>
+        <button id="add-first-pet" class="primary-btn">Add Your First Pet</button>
+      </div>
+    </main>
+
+    <!-- Add/Edit Pet Modal -->
+    <div id="pet-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2 id="modal-title">Add Pet</h2>
+
+        <label for="pet-name">Name</label>
+        <input type="text" id="pet-name" placeholder="Fluffy">
+
+        <label>Type</label>
+        <div class="pet-types">
+          <button class="pet-type active" data-type="dog">🐕 Dog</button>
+          <button class="pet-type" data-type="cat">🐈 Cat</button>
+          <button class="pet-type" data-type="bird">🐦 Bird</button>
+          <button class="pet-type" data-type="fish">🐟 Fish</button>
+          <button class="pet-type" data-type="rabbit">🐰 Rabbit</button>
+          <button class="pet-type" data-type="other">🐾 Other</button>
+        </div>
+
+        <label for="feed-times">Feeding times per day</label>
+        <select id="feed-times">
+          <option value="1">1 time</option>
+          <option value="2" selected>2 times</option>
+          <option value="3">3 times</option>
+          <option value="4">4 times</option>
+        </select>
+
+        <div class="modal-actions">
+          <button id="cancel-btn" class="secondary-btn">Cancel</button>
+          <button id="save-pet-btn" class="primary-btn">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feeding History Modal -->
+    <div id="history-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2 id="history-title">Feeding History</h2>
+        <div id="history-list" class="history-list"></div>
+        <button id="close-history" class="secondary-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
