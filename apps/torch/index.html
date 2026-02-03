@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#ffffff" id="themeColor">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <title>Torch</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="torch-app" data-mode="white">
+    <div class="torch-screen" id="torchScreen"></div>
+
+    <div class="controls">
+      <div class="color-picker">
+        <button class="color-btn active" data-color="white" style="background: #ffffff" aria-label="White"></button>
+        <button class="color-btn" data-color="warm" style="background: #ffeaa7" aria-label="Warm"></button>
+        <button class="color-btn" data-color="red" style="background: #ff0000" aria-label="Red"></button>
+        <button class="color-btn" data-color="green" style="background: #00ff00" aria-label="Green"></button>
+        <button class="color-btn" data-color="blue" style="background: #0000ff" aria-label="Blue"></button>
+      </div>
+
+      <div class="main-controls">
+        <button class="power-btn" id="powerBtn" aria-label="Toggle light">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+            <line x1="12" y1="2" x2="12" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="mode-controls">
+        <button class="mode-btn active" data-mode="solid" aria-label="Solid light">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="8"/>
+          </svg>
+        </button>
+        <button class="mode-btn" data-mode="strobe" aria-label="Strobe">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </button>
+        <button class="mode-btn" data-mode="sos" aria-label="SOS">
+          <span style="font-weight:700;font-size:0.75rem">SOS</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="brightness-control">
+      <span class="brightness-icon">☀</span>
+      <input type="range" id="brightness" min="20" max="100" value="100" class="brightness-slider">
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

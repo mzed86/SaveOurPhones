@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bus Times</title>
+<link rel="stylesheet" href="styles.css">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bus Times">
+<meta name="theme-color" content="#121212">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div id="container">
+    <header id="header">
+      <h1 id="app-title">🚌 Bus Times</h1>
+      <div id="status-bar">
+        <span id="network-status"></span>
+        <span id="refresh-countdown"></span>
+      </div>
+    </header>
+    <div id="bus-list">
+      <div class="loading-spinner"></div>
+      <div>Loading...</div>
+    </div>
+    <footer id="footer">
+      <div id="last-updated"></div>
+      <span id="tap-hint">Tap anywhere to refresh</span>
+    </footer>
+  </div>
+
+  <div id="settings-overlay" class="hidden">
+    <div id="settings-panel">
+      <h2>Configure Stops</h2>
+      <p class="settings-hint">Search for a bus stop by name or postcode (London TfL)</p>
+      <div class="search-box">
+        <input type="text" id="stop-search" placeholder="e.g. Oxford Street or SW1A 1AA">
+        <button id="search-btn">Search</button>
+      </div>
+      <div id="search-results"></div>
+      <div id="selected-stops">
+        <h3>Selected Stops</h3>
+        <div class="selected-stop">
+          <label>Direction 1:</label>
+          <span id="stop1-name">Not set</span>
+          <button class="clear-btn" data-stop="1">✕</button>
+        </div>
+        <div class="selected-stop">
+          <label>Direction 2:</label>
+          <span id="stop2-name">Not set</span>
+          <button class="clear-btn" data-stop="2">✕</button>
+        </div>
+      </div>
+      <div class="settings-actions">
+        <button id="save-settings">Save & Close</button>
+        <button id="cancel-settings">Cancel</button>
+      </div>
+      <p class="settings-footer">Long-press title to access settings again</p>
+    </div>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>

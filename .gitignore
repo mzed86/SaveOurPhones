@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+.idea/
+.vscode/
+*.sublime-*
+
+# Node (if ever used for tooling)
+node_modules/
+
+# Local dev
+.env
+.env.local
+
+# Temp files
+tmp/
+*.log

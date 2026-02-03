@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Timer">
+  <title>Kitchen Timer</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="timer-app">
+    <header class="header">
+      <h1>Kitchen Timer</h1>
+      <button class="add-btn" id="addTimer" aria-label="Add Timer">+</button>
+    </header>
+
+    <main class="timers-list" id="timersList">
+      <!-- Timers will be inserted here -->
+    </main>
+
+    <!-- Quick presets -->
+    <div class="presets">
+      <span class="presets-label">Quick Add:</span>
+      <button class="preset-btn" data-minutes="1">1m</button>
+      <button class="preset-btn" data-minutes="3">3m</button>
+      <button class="preset-btn" data-minutes="5">5m</button>
+      <button class="preset-btn" data-minutes="10">10m</button>
+      <button class="preset-btn" data-minutes="15">15m</button>
+      <button class="preset-btn" data-minutes="30">30m</button>
+    </div>
+
+    <!-- Add Timer Modal -->
+    <div class="modal" id="addModal" hidden>
+      <div class="modal-backdrop" id="modalBackdrop"></div>
+      <div class="modal-content">
+        <h2>New Timer</h2>
+        <input type="text" id="timerName" placeholder="Timer name (optional)" class="text-input" maxlength="30">
+        <div class="time-inputs">
+          <div class="time-input-group">
+            <input type="number" id="hoursInput" min="0" max="23" value="0" class="time-input">
+            <label>hrs</label>
+          </div>
+          <span class="time-separator">:</span>
+          <div class="time-input-group">
+            <input type="number" id="minutesInput" min="0" max="59" value="5" class="time-input">
+            <label>min</label>
+          </div>
+          <span class="time-separator">:</span>
+          <div class="time-input-group">
+            <input type="number" id="secondsInput" min="0" max="59" value="0" class="time-input">
+            <label>sec</label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn cancel" id="cancelAdd">Cancel</button>
+          <button class="modal-btn confirm" id="confirmAdd">Start</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="alert-modal" id="alertModal" hidden>
+      <div class="alert-content">
+        <div class="alert-icon">⏰</div>
+        <div class="alert-name" id="alertName">Timer</div>
+        <div class="alert-message">Time's up!</div>
+        <button class="alert-dismiss" id="dismissAlert">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

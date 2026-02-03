@@ -1,0 +1,110 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #fff;
+  --text-secondary: #888;
+  --accent: #007aff;
+}
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.converter-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.header {
+  padding: 16px 20px;
+  text-align: center;
+}
+.header h1 { font-size: 1.5rem; font-weight: 600; }
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.cat-btn {
+  padding: 10px 20px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-family: inherit;
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 20px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cat-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+.converter-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+}
+.input-group {
+  width: 100%;
+  max-width: 320px;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 16px;
+}
+.value-input {
+  width: 100%;
+  font-size: 2.5rem;
+  font-weight: 300;
+  font-family: inherit;
+  text-align: center;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+  margin-bottom: 12px;
+}
+.value-input::placeholder { color: var(--text-secondary); }
+.value-input:read-only { color: var(--accent); }
+.unit-select {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  -webkit-appearance: none;
+}
+.swap-btn {
+  width: 48px;
+  height: 48px;
+  font-size: 1.5rem;
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.swap-btn:active { background: var(--accent); }
+.formula {
+  padding: 20px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}

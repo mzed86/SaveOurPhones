@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Clock">
+  <title>Bedside Clock</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="clock-app">
+    <div class="clock-display" id="clockDisplay">
+      <div class="time" id="time">00:00</div>
+      <div class="seconds" id="seconds">00</div>
+      <div class="date" id="date">Loading...</div>
+    </div>
+
+    <div class="alarm-indicator" id="alarmIndicator" hidden>
+      <span class="alarm-icon">⏰</span>
+      <span id="alarmTime">--:--</span>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn" id="settingsBtn" aria-label="Settings">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel" hidden>
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSettings" aria-label="Close">✕</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-group">
+          <label class="setting-label">Display</label>
+          <div class="setting-row">
+            <span>24-hour format</span>
+            <input type="checkbox" id="format24" class="toggle">
+          </div>
+          <div class="setting-row">
+            <span>Show seconds</span>
+            <input type="checkbox" id="showSeconds" class="toggle" checked>
+          </div>
+          <div class="setting-row">
+            <span>Show date</span>
+            <input type="checkbox" id="showDate" class="toggle" checked>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">Brightness</label>
+          <input type="range" id="brightness" min="10" max="100" value="100" class="slider">
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">Color</label>
+          <div class="color-options" id="colorOptions">
+            <button class="color-btn active" data-color="#ffffff" style="background:#ffffff"></button>
+            <button class="color-btn" data-color="#ff3b30" style="background:#ff3b30"></button>
+            <button class="color-btn" data-color="#ff9500" style="background:#ff9500"></button>
+            <button class="color-btn" data-color="#34c759" style="background:#34c759"></button>
+            <button class="color-btn" data-color="#007aff" style="background:#007aff"></button>
+            <button class="color-btn" data-color="#af52de" style="background:#af52de"></button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">Alarm</label>
+          <div class="setting-row">
+            <span>Enable alarm</span>
+            <input type="checkbox" id="alarmEnabled" class="toggle">
+          </div>
+          <div class="setting-row" id="alarmTimeRow" style="display:none">
+            <span>Alarm time</span>
+            <input type="time" id="alarmTimeInput" class="time-input">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alarm Alert -->
+    <div class="alarm-alert" id="alarmAlert" hidden>
+      <div class="alarm-alert-content">
+        <div class="alarm-alert-icon">⏰</div>
+        <div class="alarm-alert-time" id="alarmAlertTime">07:00</div>
+        <button class="alarm-dismiss-btn" id="dismissAlarm">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

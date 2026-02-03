@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Habits">
+  <title>Habit Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="habits-app">
+    <header class="header">
+      <h1>Habits</h1>
+      <button class="add-btn" id="addHabit">+</button>
+    </header>
+
+    <div class="date-nav">
+      <button class="nav-btn" id="prevDay">‹</button>
+      <span class="current-date" id="currentDate">Today</span>
+      <button class="nav-btn" id="nextDay">›</button>
+    </div>
+
+    <main class="habits-list" id="habitsList"></main>
+
+    <div class="streak-summary" id="streakSummary">
+      <div class="streak-item">
+        <span class="streak-value" id="totalChecked">0</span>
+        <span class="streak-label">Today</span>
+      </div>
+      <div class="streak-item">
+        <span class="streak-value" id="currentStreak">0</span>
+        <span class="streak-label">Streak</span>
+      </div>
+    </div>
+
+    <!-- Add Habit Modal -->
+    <div class="modal" id="addModal" hidden>
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <h2>New Habit</h2>
+        <input type="text" id="habitName" placeholder="Habit name" class="text-input" maxlength="40">
+        <div class="icon-picker" id="iconPicker">
+          <button class="icon-btn active" data-icon="✓">✓</button>
+          <button class="icon-btn" data-icon="💧">💧</button>
+          <button class="icon-btn" data-icon="🏃">🏃</button>
+          <button class="icon-btn" data-icon="📚">📚</button>
+          <button class="icon-btn" data-icon="🧘">🧘</button>
+          <button class="icon-btn" data-icon="💊">💊</button>
+          <button class="icon-btn" data-icon="🥗">🥗</button>
+          <button class="icon-btn" data-icon="😴">😴</button>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn cancel" id="cancelAdd">Cancel</button>
+          <button class="modal-btn confirm" id="confirmAdd">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

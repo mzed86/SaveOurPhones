@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="dB Meter">
+  <title>Sound Level Meter</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="meter-app">
+    <header class="header">
+      <h1>Sound Level</h1>
+    </header>
+
+    <main class="main">
+      <!-- Permission Request -->
+      <div class="permission-screen" id="permissionScreen">
+        <div class="permission-icon">🎤</div>
+        <h2>Microphone Access</h2>
+        <p>This app needs microphone access to measure sound levels.</p>
+        <button class="start-btn" id="requestPermission">Allow Microphone</button>
+      </div>
+
+      <!-- Meter Display -->
+      <div class="meter-screen" id="meterScreen" hidden>
+        <div class="db-display">
+          <span class="db-value" id="dbValue">--</span>
+          <span class="db-unit">dB</span>
+        </div>
+
+        <div class="meter-visual">
+          <div class="meter-bar-container">
+            <div class="meter-bar" id="meterBar"></div>
+            <div class="meter-markers">
+              <span>0</span>
+              <span>30</span>
+              <span>60</span>
+              <span>90</span>
+              <span>120</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="level-label" id="levelLabel">Waiting...</div>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Min</span>
+            <span class="stat-value" id="minDb">--</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Avg</span>
+            <span class="stat-value" id="avgDb">--</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Max</span>
+            <span class="stat-value" id="maxDb">--</span>
+          </div>
+        </div>
+
+        <button class="reset-btn" id="resetStats">Reset Stats</button>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="reference">
+        <p>Reference levels (approximate):</p>
+        <div class="reference-items">
+          <span>🤫 Library: 30dB</span>
+          <span>🗣️ Conversation: 60dB</span>
+          <span>🚗 Traffic: 80dB</span>
+          <span>🎸 Concert: 110dB</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

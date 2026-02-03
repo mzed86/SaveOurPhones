@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Give your old iPhone a second life. Free, lightweight web apps that work offline.">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SaveOurPhones - Apps for Old iPhones</title>
+  <link rel="stylesheet" href="shared/styles/base.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+  <style>
+    .hero {
+      text-align: center;
+      padding: var(--space-xxl) var(--space-md);
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    }
+
+    .hero-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      max-width: 400px;
+      margin: 0 auto var(--space-lg);
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-xl);
+      margin-top: var(--space-lg);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .section-title {
+      padding: var(--space-lg) var(--space-md) var(--space-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: var(--space-md);
+      padding: 0 var(--space-md) var(--space-lg);
+    }
+
+    .app-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-lg) var(--space-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: transform var(--transition-fast), background var(--transition-fast);
+    }
+
+    .app-card:hover {
+      transform: translateY(-2px);
+      background: var(--bg-tertiary);
+      text-decoration: none;
+    }
+
+    .app-card:active {
+      transform: scale(0.98);
+    }
+
+    .app-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .app-name {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      text-align: center;
+    }
+
+    .app-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: var(--space-xs);
+    }
+
+    .app-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: white;
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-sm);
+    }
+
+    .how-it-works {
+      padding: var(--space-xl) var(--space-md);
+      background: var(--bg-secondary);
+      margin: var(--space-lg) var(--space-md);
+      border-radius: var(--radius-lg);
+    }
+
+    .how-it-works h2 {
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .step {
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-start;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      font-size: 0.875rem;
+      border-radius: var(--radius-full);
+    }
+
+    .step-content h3 {
+      font-size: 1rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .step-content p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .ideas-section {
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .ideas-section h2 {
+      margin-bottom: var(--space-md);
+    }
+
+    .ideas-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .idea-tag {
+      padding: var(--space-sm) var(--space-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .footer {
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .footer a {
+      color: var(--text-secondary);
+    }
+
+    .category-divider {
+      margin: var(--space-lg) var(--space-md) 0;
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--bg-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="hero-icon">📱</div>
+      <h1>SaveOurPhones</h1>
+      <p>Give your old iPhone a second life. Free, lightweight apps that work offline. No App Store needed.</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">14</div>
+          <div class="stat-label">Apps</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">&lt;500KB</div>
+          <div class="stat-label">Each</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Offline</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-title">Time & Productivity</div>
+    <div class="apps-grid">
+      <a href="apps/clock/" class="app-card">
+        <span class="app-icon">🕐</span>
+        <span class="app-name">Bedside Clock</span>
+        <span class="app-desc">Large display clock with alarm</span>
+      </a>
+      <a href="apps/pomodoro/" class="app-card">
+        <span class="app-icon">🍅</span>
+        <span class="app-name">Pomodoro</span>
+        <span class="app-desc">Focus timer with breaks</span>
+      </a>
+      <a href="apps/timer/" class="app-card">
+        <span class="app-icon">⏱️</span>
+        <span class="app-name">Kitchen Timer</span>
+        <span class="app-desc">Multiple countdown timers</span>
+      </a>
+      <a href="apps/metronome/" class="app-card">
+        <span class="app-icon">🎵</span>
+        <span class="app-name">Metronome</span>
+        <span class="app-desc">Keep the beat</span>
+      </a>
+      <a href="apps/habits/" class="app-card">
+        <span class="app-icon">✅</span>
+        <span class="app-name">Habit Tracker</span>
+        <span class="app-desc">Build daily habits</span>
+      </a>
+    </div>
+
+    <div class="category-divider"></div>
+    <div class="section-title">Wellness & Utility</div>
+    <div class="apps-grid">
+      <a href="apps/breathing/" class="app-card">
+        <span class="app-icon">🌬️</span>
+        <span class="app-name">Breathing</span>
+        <span class="app-desc">Guided breathing exercises</span>
+      </a>
+      <a href="apps/notes/" class="app-card">
+        <span class="app-icon">📝</span>
+        <span class="app-name">Notes</span>
+        <span class="app-desc">Quick offline notes</span>
+      </a>
+      <a href="apps/torch/" class="app-card">
+        <span class="app-icon">🔦</span>
+        <span class="app-name">Torch</span>
+        <span class="app-desc">Flashlight & screen light</span>
+      </a>
+      <a href="apps/sound-meter/" class="app-card">
+        <span class="app-icon">📊</span>
+        <span class="app-name">Sound Meter</span>
+        <span class="app-desc">Measure noise levels</span>
+      </a>
+      <a href="apps/level/" class="app-card">
+        <span class="app-icon">📐</span>
+        <span class="app-name">Level</span>
+        <span class="app-desc">Bubble level tool</span>
+      </a>
+    </div>
+
+    <div class="category-divider"></div>
+    <div class="section-title">Tools & Reference</div>
+    <div class="apps-grid">
+      <a href="apps/converter/" class="app-card">
+        <span class="app-icon">🔄</span>
+        <span class="app-name">Unit Converter</span>
+        <span class="app-desc">Convert measurements</span>
+      </a>
+      <a href="apps/tally/" class="app-card">
+        <span class="app-icon">🔢</span>
+        <span class="app-name">Tally Counter</span>
+        <span class="app-desc">Count anything</span>
+      </a>
+      <a href="apps/colors/" class="app-card">
+        <span class="app-icon">🎨</span>
+        <span class="app-name">Color Picker</span>
+        <span class="app-desc">Pick and save colors</span>
+      </a>
+      <a href="apps/bus-times/" class="app-card">
+        <span class="app-icon">🚌</span>
+        <span class="app-name">Bus Times</span>
+        <span class="app-desc">London TfL arrivals</span>
+      </a>
+    </div>
+
+    <section class="how-it-works">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <h3>Choose an App</h3>
+            <p>Browse our collection and tap one that suits your needs.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <h3>Add to Home Screen</h3>
+            <p>Tap the share button, then "Add to Home Screen" to install.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <h3>Use Offline</h3>
+            <p>The app works without internet. Your old phone has a new purpose!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ideas-section">
+      <h2>Repurpose Ideas</h2>
+      <p class="text-secondary mb-md">Turn your old iPhone into a dedicated...</p>
+      <div class="ideas-list">
+        <span class="idea-tag">Bedside Clock</span>
+        <span class="idea-tag">Kitchen Timer</span>
+        <span class="idea-tag">Meditation Guide</span>
+        <span class="idea-tag">Practice Metronome</span>
+        <span class="idea-tag">Habit Dashboard</span>
+        <span class="idea-tag">DIY Level Tool</span>
+        <span class="idea-tag">Bus Stop Display</span>
+        <span class="idea-tag">Counter for Events</span>
+        <span class="idea-tag">Recipe Timer</span>
+        <span class="idea-tag">Focus Station</span>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Made to reduce e-waste</p>
+      <p><a href="https://github.com/your-username/SaveOurPhones">View on GitHub</a></p>
+    </footer>
+  </main>
+</body>
+</html>

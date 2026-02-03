@@ -1,0 +1,361 @@
+/* Pomodoro Timer Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-work: #ff6b6b;
+  --color-short: #4ecdc4;
+  --color-long: #45b7d1;
+  --color-current: var(--color-work);
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pomodoro-app {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Header */
+.header {
+  padding: 20px;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-secondary);
+  padding: 6px;
+  border-radius: 12px;
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-tab.active {
+  color: var(--text-primary);
+  background: var(--color-current);
+}
+
+.mode-tab:not(.active):hover {
+  color: var(--text-primary);
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 32px;
+}
+
+/* Timer */
+.timer-container {
+  position: relative;
+  width: min(280px, 70vw);
+  aspect-ratio: 1;
+}
+
+.timer-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-ring-bg {
+  fill: none;
+  stroke: var(--bg-secondary);
+  stroke-width: 8;
+}
+
+.timer-ring-progress {
+  fill: none;
+  stroke: var(--color-current);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 565.48;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s ease, stroke 0.3s;
+}
+
+.timer-display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-time {
+  font-size: clamp(3rem, 15vw, 4.5rem);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.timer-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+.control-btn.primary {
+  width: 80px;
+  height: 80px;
+  background: var(--color-current);
+  color: white;
+}
+
+.control-btn.primary:hover {
+  filter: brightness(1.1);
+}
+
+.control-btn.secondary {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.control-btn.secondary:hover {
+  color: var(--text-primary);
+}
+
+/* Session Counter */
+.session-counter {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.session-counter span {
+  font-weight: 600;
+  color: var(--color-current);
+}
+
+/* Settings Button */
+.settings-btn {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.settings-btn:hover {
+  color: var(--text-primary);
+}
+
+/* Settings Panel */
+.settings-panel {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow-y: auto;
+}
+
+.settings-panel[hidden] {
+  display: none;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid var(--bg-secondary);
+}
+
+.settings-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.settings-content {
+  padding: 20px;
+}
+
+.setting-group {
+  margin-bottom: 32px;
+}
+
+.setting-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bg-secondary);
+}
+
+.setting-row span {
+  font-size: 1rem;
+}
+
+/* Number Input */
+.number-input {
+  width: 64px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  text-align: center;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 8px;
+}
+
+/* Toggle Switch */
+.toggle {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 51px;
+  height: 31px;
+  background: #333;
+  border-radius: 31px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle:checked {
+  background: var(--color-work);
+}
+
+.toggle:checked::before {
+  transform: translateX(20px);
+}
+
+/* Reset Stats Button */
+.reset-stats-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #ff6b6b;
+  background: transparent;
+  border: 1px solid #ff6b6b;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.reset-stats-btn:hover {
+  background: rgba(255, 107, 107, 0.1);
+}
+
+/* Mode colors */
+[data-mode="work"] {
+  --color-current: var(--color-work);
+}
+
+[data-mode="short"] {
+  --color-current: var(--color-short);
+}
+
+[data-mode="long"] {
+  --color-current: var(--color-long);
+}

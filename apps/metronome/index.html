@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Metronome">
+  <title>Metronome</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="metronome-app">
+    <div class="pendulum-container">
+      <div class="pendulum" id="pendulum">
+        <div class="pendulum-arm"></div>
+        <div class="pendulum-weight"></div>
+      </div>
+    </div>
+
+    <div class="beat-indicator" id="beatIndicator">
+      <span class="beat-dot active"></span>
+      <span class="beat-dot"></span>
+      <span class="beat-dot"></span>
+      <span class="beat-dot"></span>
+    </div>
+
+    <div class="bpm-display">
+      <div class="bpm-value" id="bpmValue">120</div>
+      <div class="bpm-label">BPM</div>
+    </div>
+
+    <div class="bpm-control">
+      <button class="bpm-btn" id="bpmDown" aria-label="Decrease BPM">−</button>
+      <input type="range" id="bpmSlider" min="20" max="240" value="120" class="bpm-slider">
+      <button class="bpm-btn" id="bpmUp" aria-label="Increase BPM">+</button>
+    </div>
+
+    <div class="tempo-presets">
+      <button class="preset-btn" data-bpm="60">Largo</button>
+      <button class="preset-btn" data-bpm="90">Andante</button>
+      <button class="preset-btn active" data-bpm="120">Allegro</button>
+      <button class="preset-btn" data-bpm="180">Presto</button>
+    </div>
+
+    <div class="time-signature">
+      <button class="sig-btn" data-beats="2">2/4</button>
+      <button class="sig-btn" data-beats="3">3/4</button>
+      <button class="sig-btn active" data-beats="4">4/4</button>
+      <button class="sig-btn" data-beats="6">6/8</button>
+    </div>
+
+    <button class="play-btn" id="playBtn">
+      <svg class="icon-play" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+      <svg class="icon-pause" width="40" height="40" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+        <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+      </svg>
+    </button>
+
+    <div class="tap-tempo">
+      <button class="tap-btn" id="tapBtn">Tap Tempo</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

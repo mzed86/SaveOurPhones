@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Level">
+  <title>Bubble Level</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="level-app">
+    <div class="permission-screen" id="permissionScreen">
+      <div class="icon">📐</div>
+      <h2>Motion Access</h2>
+      <p>This app needs motion sensor access to work as a level.</p>
+      <button id="requestPermission">Enable Motion</button>
+    </div>
+    <div class="level-screen" id="levelScreen" hidden>
+      <div class="level-display">
+        <div class="bubble-level horizontal">
+          <div class="bubble" id="hBubble"></div>
+          <div class="center-mark"></div>
+        </div>
+        <div class="angle-display">
+          <div class="angle" id="pitch">0.0°</div>
+          <div class="label">Pitch</div>
+        </div>
+        <div class="bubble-level vertical">
+          <div class="bubble" id="vBubble"></div>
+          <div class="center-mark"></div>
+        </div>
+        <div class="angle-display">
+          <div class="angle" id="roll">0.0°</div>
+          <div class="label">Roll</div>
+        </div>
+      </div>
+      <div class="status" id="status">Place phone on surface</div>
+      <button class="calibrate-btn" id="calibrateBtn">Calibrate</button>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

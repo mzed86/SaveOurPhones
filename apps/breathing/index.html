@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Breathe">
+  <title>Breathing Exercise</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="breathing-app">
+    <div class="breath-circle-container">
+      <div class="breath-circle" id="breathCircle">
+        <div class="breath-inner">
+          <span class="breath-instruction" id="instruction">Tap to Start</span>
+          <span class="breath-timer" id="timer"></span>
+        </div>
+      </div>
+      <div class="breath-glow" id="breathGlow"></div>
+    </div>
+
+    <div class="controls" id="controls">
+      <button class="start-btn" id="startBtn">Begin</button>
+    </div>
+
+    <div class="patterns" id="patterns">
+      <button class="pattern-btn active" data-pattern="relaxing">
+        <span class="pattern-name">Relaxing</span>
+        <span class="pattern-desc">4-7-8</span>
+      </button>
+      <button class="pattern-btn" data-pattern="balanced">
+        <span class="pattern-name">Balanced</span>
+        <span class="pattern-desc">4-4-4-4</span>
+      </button>
+      <button class="pattern-btn" data-pattern="energizing">
+        <span class="pattern-name">Energizing</span>
+        <span class="pattern-desc">4-4</span>
+      </button>
+    </div>
+
+    <div class="session-info" id="sessionInfo" hidden>
+      <span id="cycleCount">0</span> cycles
+    </div>
+
+    <button class="settings-btn" id="settingsBtn" aria-label="Settings">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+    </button>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel" hidden>
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSettings">✕</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-group">
+          <label class="setting-label">Options</label>
+          <div class="setting-row">
+            <span>Haptic feedback</span>
+            <input type="checkbox" id="hapticEnabled" class="toggle" checked>
+          </div>
+          <div class="setting-row">
+            <span>Sound cues</span>
+            <input type="checkbox" id="soundEnabled" class="toggle" checked>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">About Patterns</label>
+          <div class="pattern-info">
+            <h3>4-7-8 Relaxing</h3>
+            <p>Inhale 4s, hold 7s, exhale 8s. Great for reducing anxiety and falling asleep.</p>
+          </div>
+          <div class="pattern-info">
+            <h3>4-4-4-4 Box Breathing</h3>
+            <p>Equal parts inhale, hold, exhale, hold. Used by Navy SEALs for calm focus.</p>
+          </div>
+          <div class="pattern-info">
+            <h3>4-4 Energizing</h3>
+            <p>Quick inhale and exhale. Increases alertness and energy.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

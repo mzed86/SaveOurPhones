@@ -1,0 +1,203 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #fff;
+  --text-secondary: #888;
+  --accent: #4cd964;
+  --danger: #ff3b30;
+}
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.habits-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+}
+.header h1 { font-size: 1.75rem; font-weight: 700; }
+.add-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+}
+.date-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 20px 16px;
+}
+.nav-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 1.25rem;
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.current-date {
+  font-weight: 600;
+  min-width: 120px;
+  text-align: center;
+}
+.habits-list {
+  flex: 1;
+  padding: 0 20px;
+  overflow-y: auto;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+.habit-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.habit-check {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--text-secondary);
+  background: transparent;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.habit-check.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+.habit-info { flex: 1; }
+.habit-name { font-weight: 500; }
+.habit-streak {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.habit-delete {
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0.5;
+}
+.habit-delete:hover { opacity: 1; color: var(--danger); }
+.streak-summary {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 20px;
+  border-top: 1px solid var(--bg-secondary);
+}
+.streak-item { text-align: center; }
+.streak-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--accent);
+}
+.streak-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal[hidden] { display: none; }
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+}
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  padding: 24px;
+}
+.modal-content h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.text-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: none;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.icon-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  font-size: 1.25rem;
+  background: var(--bg-primary);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.icon-btn.active { border-color: var(--accent); }
+.modal-actions { display: flex; gap: 12px; }
+.modal-btn {
+  flex: 1;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: inherit;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.modal-btn.cancel { background: var(--bg-primary); color: var(--text-primary); }
+.modal-btn.confirm { background: var(--accent); color: #000; }

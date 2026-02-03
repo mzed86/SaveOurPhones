@@ -1,0 +1,260 @@
+/* Sound Level Meter Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --text-primary: #ffffff;
+  --text-secondary: #8892b0;
+  --green: #00ff88;
+  --yellow: #ffdd00;
+  --orange: #ff9500;
+  --red: #ff3b30;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.meter-app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Header */
+.header {
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* Permission Screen */
+.permission-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.permission-screen[hidden] {
+  display: none;
+}
+
+.permission-icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+}
+
+.permission-screen h2 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.permission-screen p {
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  max-width: 280px;
+}
+
+.start-btn {
+  padding: 16px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--green);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.start-btn:active {
+  transform: scale(0.97);
+}
+
+/* Meter Screen */
+.meter-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.meter-screen[hidden] {
+  display: none;
+}
+
+/* dB Display */
+.db-display {
+  text-align: center;
+}
+
+.db-value {
+  font-size: 5rem;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.db-unit {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+/* Meter Visual */
+.meter-visual {
+  width: 100%;
+  max-width: 300px;
+}
+
+.meter-bar-container {
+  position: relative;
+  height: 24px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.meter-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green) 0%, var(--green) 50%, var(--yellow) 70%, var(--orange) 85%, var(--red) 100%);
+  border-radius: 12px;
+  transition: width 0.1s ease-out;
+}
+
+.meter-markers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Level Label */
+.level-label {
+  font-size: 1.125rem;
+  font-weight: 500;
+  padding: 8px 20px;
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  transition: background 0.3s;
+}
+
+.level-label.quiet {
+  background: rgba(0, 255, 136, 0.2);
+  color: var(--green);
+}
+
+.level-label.moderate {
+  background: rgba(255, 221, 0, 0.2);
+  color: var(--yellow);
+}
+
+.level-label.loud {
+  background: rgba(255, 149, 0, 0.2);
+  color: var(--orange);
+}
+
+.level-label.dangerous {
+  background: rgba(255, 59, 48, 0.2);
+  color: var(--red);
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 16px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reset Button */
+.reset-btn {
+  margin-top: auto;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-family: inherit;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.reset-btn:hover {
+  color: var(--text-primary);
+}
+
+/* Footer */
+.footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--bg-secondary);
+}
+
+.reference p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.reference-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}

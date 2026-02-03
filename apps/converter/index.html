@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Convert">
+  <title>Unit Converter</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="converter-app">
+    <header class="header">
+      <h1>Converter</h1>
+    </header>
+
+    <div class="category-tabs" id="categoryTabs">
+      <button class="cat-btn active" data-cat="length">Length</button>
+      <button class="cat-btn" data-cat="weight">Weight</button>
+      <button class="cat-btn" data-cat="temp">Temp</button>
+      <button class="cat-btn" data-cat="volume">Volume</button>
+    </div>
+
+    <main class="converter-main">
+      <div class="input-group">
+        <input type="number" id="fromValue" class="value-input" placeholder="0" inputmode="decimal">
+        <select id="fromUnit" class="unit-select"></select>
+      </div>
+
+      <button class="swap-btn" id="swapBtn" aria-label="Swap units">⇅</button>
+
+      <div class="input-group">
+        <input type="number" id="toValue" class="value-input" placeholder="0" readonly>
+        <select id="toUnit" class="unit-select"></select>
+      </div>
+    </main>
+
+    <div class="formula" id="formula"></div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

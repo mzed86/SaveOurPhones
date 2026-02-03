@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pomodoro">
+  <title>Pomodoro Timer</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="pomodoro-app">
+    <header class="header">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="work">Focus</button>
+        <button class="mode-tab" data-mode="short">Short Break</button>
+        <button class="mode-tab" data-mode="long">Long Break</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="timer-container">
+        <svg class="timer-ring" viewBox="0 0 200 200">
+          <circle class="timer-ring-bg" cx="100" cy="100" r="90" />
+          <circle class="timer-ring-progress" cx="100" cy="100" r="90" id="progress" />
+        </svg>
+        <div class="timer-display">
+          <span class="timer-time" id="timerDisplay">25:00</span>
+          <span class="timer-label" id="timerLabel">Focus Time</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="control-btn secondary" id="resetBtn" aria-label="Reset">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+        </button>
+        <button class="control-btn primary" id="startBtn">
+          <svg class="icon-play" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <svg class="icon-pause" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+            <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+          </svg>
+        </button>
+        <button class="control-btn secondary" id="skipBtn" aria-label="Skip">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 4l10 8-10 8V4zM19 5v14"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="session-counter">
+        <span id="sessionCount">0</span> sessions completed
+      </div>
+    </main>
+
+    <button class="settings-btn" id="settingsBtn" aria-label="Settings">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+    </button>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel" hidden>
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button class="close-btn" id="closeSettings">✕</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-group">
+          <label class="setting-label">Timer Durations (minutes)</label>
+          <div class="setting-row">
+            <span>Focus</span>
+            <input type="number" id="workDuration" min="1" max="60" value="25" class="number-input">
+          </div>
+          <div class="setting-row">
+            <span>Short Break</span>
+            <input type="number" id="shortBreakDuration" min="1" max="30" value="5" class="number-input">
+          </div>
+          <div class="setting-row">
+            <span>Long Break</span>
+            <input type="number" id="longBreakDuration" min="1" max="60" value="15" class="number-input">
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">Options</label>
+          <div class="setting-row">
+            <span>Sessions until long break</span>
+            <input type="number" id="sessionsUntilLong" min="2" max="10" value="4" class="number-input">
+          </div>
+          <div class="setting-row">
+            <span>Auto-start breaks</span>
+            <input type="checkbox" id="autoStartBreaks" class="toggle">
+          </div>
+          <div class="setting-row">
+            <span>Auto-start focus</span>
+            <input type="checkbox" id="autoStartWork" class="toggle">
+          </div>
+          <div class="setting-row">
+            <span>Sound notifications</span>
+            <input type="checkbox" id="soundEnabled" class="toggle" checked>
+          </div>
+        </div>
+
+        <button class="reset-stats-btn" id="resetStats">Reset Statistics</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

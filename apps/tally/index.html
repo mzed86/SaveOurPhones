@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tally">
+  <title>Tally Counter</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="tally-app">
+    <div class="counter-display">
+      <div class="count" id="count">0</div>
+      <div class="label" id="label">Tap anywhere to count</div>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" id="minusBtn">−</button>
+      <button class="ctrl-btn reset" id="resetBtn">Reset</button>
+      <button class="ctrl-btn" id="plusBtn">+</button>
+    </div>
+    <div class="counters-list" id="countersList"></div>
+    <button class="add-counter-btn" id="addCounter">+ New Counter</button>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1c1c1e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Notes">
+  <title>Notes</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="notes-app">
+    <!-- Notes List View -->
+    <div class="view" id="listView">
+      <header class="header">
+        <h1>Notes</h1>
+        <button class="icon-btn" id="newNoteBtn" aria-label="New Note">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="search-bar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search notes...">
+      </div>
+
+      <main class="notes-list" id="notesList">
+        <!-- Notes will be rendered here -->
+      </main>
+    </div>
+
+    <!-- Note Editor View -->
+    <div class="view" id="editorView" hidden>
+      <header class="header editor-header">
+        <button class="back-btn" id="backBtn" aria-label="Back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <div class="header-actions">
+          <button class="icon-btn" id="deleteNoteBtn" aria-label="Delete">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="editor-content">
+        <input type="text" id="noteTitle" class="note-title-input" placeholder="Title">
+        <textarea id="noteBody" class="note-body-input" placeholder="Start writing..."></textarea>
+      </main>
+
+      <footer class="editor-footer">
+        <span class="note-date" id="noteDate"></span>
+        <span class="note-chars" id="noteChars">0 characters</span>
+      </footer>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

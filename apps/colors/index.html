@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Colors">
+  <title>Color Picker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="colors-app">
+    <div class="color-preview" id="colorPreview"></div>
+    <div class="color-values">
+      <div class="color-value" id="hexValue">#FF5733</div>
+      <div class="color-value small" id="rgbValue">rgb(255, 87, 51)</div>
+    </div>
+    <div class="sliders">
+      <div class="slider-group">
+        <label>R</label>
+        <input type="range" id="rSlider" min="0" max="255" value="255" class="slider r">
+        <span id="rVal">255</span>
+      </div>
+      <div class="slider-group">
+        <label>G</label>
+        <input type="range" id="gSlider" min="0" max="255" value="87" class="slider g">
+        <span id="gVal">87</span>
+      </div>
+      <div class="slider-group">
+        <label>B</label>
+        <input type="range" id="bSlider" min="0" max="255" value="51" class="slider b">
+        <span id="bVal">51</span>
+      </div>
+    </div>
+    <div class="palette-section">
+      <div class="palette-header">
+        <span>Saved</span>
+        <button id="saveColor">+ Save</button>
+      </div>
+      <div class="palette" id="palette"></div>
+    </div>
+    <div class="presets">
+      <button class="preset" style="background:#FF5733" data-color="#FF5733"></button>
+      <button class="preset" style="background:#33FF57" data-color="#33FF57"></button>
+      <button class="preset" style="background:#3357FF" data-color="#3357FF"></button>
+      <button class="preset" style="background:#F333FF" data-color="#F333FF"></button>
+      <button class="preset" style="background:#FFFF33" data-color="#FFFF33"></button>
+      <button class="preset" style="background:#33FFFF" data-color="#33FFFF"></button>
+      <button class="preset" style="background:#FFFFFF" data-color="#FFFFFF"></button>
+      <button class="preset" style="background:#000000" data-color="#000000"></button>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
