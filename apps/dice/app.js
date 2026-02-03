@@ -6,6 +6,101 @@
   let modifier = 0;
   let history = [];
   const MAX_HISTORY = 20;
+  let soundEnabled = true;
+
+  // Audio Context for sound generation
+  let audioCtx = null;
+
+  function getAudioContext() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  // Sound effects using Web Audio API (no external files needed)
+  function playSound(type) {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+
+      if (type === 'roll') {
+        // Dice rolling sound - rapid clicking/rattling
+        for (let i = 0; i < 8; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = 200 + Math.random() * 400;
+          osc.type = 'square';
+          gain.gain.setValueAtTime(0.08, now + i * 0.03);
+          gain.gain.exponentialDecayTo ? gain.gain.exponentialDecayTo(0.001, now + i * 0.03 + 0.05) : gain.gain.setValueAtTime(0.001, now + i * 0.03 + 0.05);
+          osc.start(now + i * 0.03);
+          osc.stop(now + i * 0.03 + 0.05);
+        }
+      } else if (type === 'land') {
+        // Landing thud
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      } else if (type === 'critical') {
+        // Triumphant fanfare for nat 20
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freq;
+          osc.type = 'triangle';
+          gain.gain.setValueAtTime(0, now + i * 0.08);
+          gain.gain.linearRampToValueAtTime(0.2, now + i * 0.08 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.3);
+        });
+      } else if (type === 'fumble') {
+        // Sad descending tone for nat 1
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.4);
+        osc.type = 'sawtooth';
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } else if (type === 'click') {
+        // Button click
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 600;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+    } catch (e) {
+      // Audio not supported, fail silently
+    }
+  }
 
   // DOM elements
   const resultValue = document.getElementById('result-value');
@@ -41,50 +136,83 @@
     const isCritical = sides === 20 && quantity === 1 && rolls[0] === 20;
     const isFumble = sides === 20 && quantity === 1 && rolls[0] === 1;
 
-    // Animate result
+    // Play rolling sound
+    playSound('roll');
+
+    // Animate result - cycle through random numbers
     resultValue.classList.add('rolling');
-    resultValue.classList.remove('critical', 'fumble');
+    resultValue.classList.remove('critical', 'fumble', 'bounce', 'critical-glow', 'fumble-shake');
+    resultBreakdown.textContent = '';
 
-    setTimeout(() => {
-      resultValue.classList.remove('rolling');
-      resultValue.textContent = total;
+    const resultDisplay = document.getElementById('result-display');
+    resultDisplay.classList.add('active');
 
-      if (isCritical) {
-        resultValue.classList.add('critical');
-      } else if (isFumble) {
-        resultValue.classList.add('fumble');
-      }
+    // Animate cycling numbers
+    let cycleCount = 0;
+    const maxCycles = 12;
+    const cycleInterval = setInterval(() => {
+      const randomNum = Math.floor(Math.random() * sides) + 1;
+      const displayNum = quantity > 1 ? randomNum * quantity : randomNum;
+      resultValue.textContent = displayNum + modifier;
+      cycleCount++;
 
-      // Show breakdown
-      let breakdown = '';
-      if (quantity > 1) {
-        breakdown = `[${rolls.join(' + ')}]`;
-        if (modifier !== 0) {
-          breakdown += ` ${modifier >= 0 ? '+' : ''}${modifier}`;
-        }
-      } else if (modifier !== 0) {
-        breakdown = `${rolls[0]} ${modifier >= 0 ? '+' : ''}${modifier}`;
-      }
+      if (cycleCount >= maxCycles) {
+        clearInterval(cycleInterval);
 
-      if (isCritical) breakdown += ' 🎯 Critical!';
-      if (isFumble) breakdown += ' 💀 Fumble!';
+        // Show final result
+        resultValue.classList.remove('rolling');
+        resultValue.classList.add('bounce');
+        resultValue.textContent = total;
 
-      resultBreakdown.textContent = breakdown;
+        // Play landing sound
+        playSound('land');
 
-      // Add to history
-      addToHistory(sides, rolls, modifier, total, isCritical, isFumble);
-
-      // Haptic feedback
-      if (navigator.vibrate) {
         if (isCritical) {
-          navigator.vibrate([50, 30, 50, 30, 50]);
+          resultValue.classList.add('critical', 'critical-glow');
+          playSound('critical');
         } else if (isFumble) {
-          navigator.vibrate([100, 50, 100]);
-        } else {
-          navigator.vibrate(30);
+          resultValue.classList.add('fumble', 'fumble-shake');
+          playSound('fumble');
         }
+
+        // Show breakdown
+        let breakdown = '';
+        if (quantity > 1) {
+          breakdown = `[${rolls.join(' + ')}]`;
+          if (modifier !== 0) {
+            breakdown += ` ${modifier >= 0 ? '+' : ''}${modifier}`;
+          }
+        } else if (modifier !== 0) {
+          breakdown = `${rolls[0]} ${modifier >= 0 ? '+' : ''}${modifier}`;
+        }
+
+        if (isCritical) breakdown += ' 🎯 Critical!';
+        if (isFumble) breakdown += ' 💀 Fumble!';
+
+        resultBreakdown.textContent = breakdown;
+        resultBreakdown.classList.add('fade-in');
+        setTimeout(() => resultBreakdown.classList.remove('fade-in'), 300);
+
+        // Add to history
+        addToHistory(sides, rolls, modifier, total, isCritical, isFumble);
+
+        // Haptic feedback
+        if (navigator.vibrate) {
+          if (isCritical) {
+            navigator.vibrate([50, 30, 50, 30, 50]);
+          } else if (isFumble) {
+            navigator.vibrate([100, 50, 100]);
+          } else {
+            navigator.vibrate(30);
+          }
+        }
+
+        setTimeout(() => {
+          resultDisplay.classList.remove('active');
+          resultValue.classList.remove('bounce');
+        }, 500);
       }
-    }, 200);
+    }, 50);
   }
 
   // Add to history
@@ -147,6 +275,9 @@
   function updateQuantity(delta) {
     quantity = Math.max(1, Math.min(20, quantity + delta));
     quantityEl.textContent = quantity;
+    quantityEl.classList.add('pop');
+    setTimeout(() => quantityEl.classList.remove('pop'), 150);
+    playSound('click');
     if (navigator.vibrate) navigator.vibrate(20);
   }
 
@@ -154,6 +285,9 @@
   function updateModifier(delta) {
     modifier = Math.max(-20, Math.min(20, modifier + delta));
     modifierEl.textContent = modifier >= 0 ? `+${modifier}` : modifier.toString();
+    modifierEl.classList.add('pop');
+    setTimeout(() => modifierEl.classList.remove('pop'), 150);
+    playSound('click');
     if (navigator.vibrate) navigator.vibrate(20);
   }
 
@@ -191,6 +325,8 @@
   diceBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const sides = parseInt(btn.dataset.sides);
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 200);
       roll(sides);
     });
   });
