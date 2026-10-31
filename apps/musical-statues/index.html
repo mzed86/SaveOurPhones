@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#050505">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Statues">
+  <title>Musical Statues</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Pictograms, drawn once and reused in each lamp -->
+  <svg class="defs" width="0" height="0" aria-hidden="true">
+    <defs>
+      <pattern id="ledDots" width="4.6" height="4.6" patternUnits="userSpaceOnUse">
+        <circle cx="2.3" cy="2.3" r="1.25" fill="#fff"/>
+      </pattern>
+      <g id="poseStand">
+        <circle cx="50" cy="15" r="9" stroke="none"/>
+        <path d="M50 31 L50 57" fill="none" stroke-width="17" stroke-linecap="round"/>
+        <path d="M36.5 32 L34.5 57 M63.5 32 L65.5 57" fill="none" stroke-width="7" stroke-linecap="round"/>
+        <path d="M45 60 L44 90 M55 60 L56 90" fill="none" stroke-width="9" stroke-linecap="round"/>
+      </g>
+      <g id="poseDanceA">
+        <circle cx="45" cy="14" r="9" stroke="none"/>
+        <path d="M48 31 L52 56" fill="none" stroke-width="16" stroke-linecap="round"/>
+        <path d="M41 32 L31 23 L26 8 M58 33 L70 40 L80 31" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M48 60 L42 75 L37 90 M57 60 L67 71 L80 74" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g id="poseDanceB" transform="matrix(-1 0 0 1 100 0)">
+        <use xlink:href="#poseDanceA" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </g>
+    </defs>
+  </svg>
+
+  <div class="backboard" id="stage">
+    <div class="housing" id="housing" role="img" aria-label="Signal showing red: stand still">
+      <div class="lamp red on" id="lampRed">
+        <div class="glow"></div>
+        <div class="bezel">
+          <div class="lens">
+            <div class="lit"></div>
+            <svg class="figure" viewBox="0 0 100 100" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <use class="fig-base" xlink:href="#poseStand"/>
+              <use class="fig-dots" xlink:href="#poseStand" fill="url(#ledDots)" stroke="url(#ledDots)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="visor"></div>
+      </div>
+      <div class="lamp green" id="lampGreen">
+        <div class="glow"></div>
+        <div class="bezel">
+          <div class="lens">
+            <div class="lit"></div>
+            <svg class="figure pose-a" viewBox="0 0 100 100" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <use class="fig-base" xlink:href="#poseDanceA"/>
+              <use class="fig-dots" xlink:href="#poseDanceA" fill="url(#ledDots)" stroke="url(#ledDots)"/>
+            </svg>
+            <svg class="figure pose-b" viewBox="0 0 100 100" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <use class="fig-base" xlink:href="#poseDanceB"/>
+              <use class="fig-dots" xlink:href="#poseDanceB" fill="url(#ledDots)" stroke="url(#ledDots)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="visor"></div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen">
+      <div class="player-wrap" id="playerWrap"></div>
+      <div class="screen-empty" id="screenEmpty">
+        <p class="screen-msg" id="screenMsg">Choose a song or playlist from YouTube</p>
+        <button class="choose-btn" id="chooseBtn">Choose music</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="settings-btn" id="settingsBtn" aria-label="Settings" tabindex="-1">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <div class="sheet-backdrop" id="sheetBackdrop" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <h2 class="sheet-title" id="sheetTitle">Musical Statues</h2>
+
+      <label class="field-label" for="videoInput">YouTube song or playlist link</label>
+      <div class="url-row">
+        <input class="url-input" id="videoInput" type="url" placeholder="https://youtu.be/…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        <button class="load-btn" id="loadBtn">Load</button>
+      </div>
+      <p class="status" id="status" aria-live="polite"></p>
+
+      <h3 class="group-title"><i class="dot green"></i>Dance</h3>
+      <div class="rows">
+        <div class="row" data-key="danceMin">
+          <span class="row-label">Shortest</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter shortest dance">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer shortest dance">+</button>
+          </div>
+        </div>
+        <div class="row" data-key="danceMax">
+          <span class="row-label">Longest</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter longest dance">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer longest dance">+</button>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="group-title"><i class="dot red"></i>Freeze</h3>
+      <div class="rows">
+        <div class="row" data-key="freezeMin">
+          <span class="row-label">Shortest</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter shortest freeze">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer shortest freeze">+</button>
+          </div>
+        </div>
+        <div class="row" data-key="freezeMax">
+          <span class="row-label">Longest</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter longest freeze">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer longest freeze">+</button>
+          </div>
+        </div>
+      </div>
+      <p class="seq-hint">Each round picks a random time between shortest and longest, so nobody knows when the music will stop.</p>
+
+      <button class="done-btn" id="doneBtn">Done</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
