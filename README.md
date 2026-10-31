@@ -27,6 +27,7 @@ Millions of perfectly functional iPhones get discarded each year. These devices 
 - **Tally Counter** - Count anything
 - **Color Picker** - Pick and save colors
 - **Bus Times** - London TfL arrivals
+- **Traffic Light** - Full-screen live signal with custom timing
 
 ## Features
 

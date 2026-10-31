@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#050505">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Traffic Light">
+  <title>Traffic Light</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="backboard" id="stage">
+    <div class="housing" id="housing" role="img" aria-label="Traffic light showing red">
+      <div class="lamp red" id="lampRed">
+        <div class="glow"></div>
+        <div class="bezel">
+          <div class="lens"><div class="lit"></div></div>
+        </div>
+        <div class="visor"></div>
+      </div>
+      <div class="lamp amber" id="lampAmber">
+        <div class="glow"></div>
+        <div class="bezel">
+          <div class="lens"><div class="lit"></div></div>
+        </div>
+        <div class="visor"></div>
+      </div>
+      <div class="lamp green" id="lampGreen">
+        <div class="glow"></div>
+        <div class="bezel">
+          <div class="lens"><div class="lit"></div></div>
+        </div>
+        <div class="visor"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="settings-btn" id="settingsBtn" aria-label="Timing settings" tabindex="-1">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <div class="sheet-backdrop" id="sheetBackdrop" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <h2 class="sheet-title" id="sheetTitle">Timing</h2>
+
+      <div class="seq-toggle" role="radiogroup" aria-label="Sequence">
+        <button class="seq-btn" data-seq="uk" role="radio">UK</button>
+        <button class="seq-btn" data-seq="standard" role="radio">Standard</button>
+      </div>
+      <p class="seq-hint" id="seqHint"></p>
+
+      <div class="rows">
+        <div class="row" data-key="red">
+          <span class="row-dots"><i class="dot red"></i></span>
+          <span class="row-label">Red</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter red">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer red">+</button>
+          </div>
+        </div>
+        <div class="row" data-key="redAmber">
+          <span class="row-dots"><i class="dot red"></i><i class="dot amber"></i></span>
+          <span class="row-label">Red &amp; Amber</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter red and amber">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer red and amber">+</button>
+          </div>
+        </div>
+        <div class="row" data-key="green">
+          <span class="row-dots"><i class="dot green"></i></span>
+          <span class="row-label">Green</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter green">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer green">+</button>
+          </div>
+        </div>
+        <div class="row" data-key="amber">
+          <span class="row-dots"><i class="dot amber"></i></span>
+          <span class="row-label">Amber</span>
+          <div class="stepper">
+            <button class="step-btn" data-dir="-1" aria-label="Shorter amber">&minus;</button>
+            <output class="step-value" aria-live="polite"></output>
+            <button class="step-btn" data-dir="1" aria-label="Longer amber">+</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="done-btn" id="doneBtn">Done</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

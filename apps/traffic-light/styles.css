@@ -1,0 +1,510 @@
+/* Traffic Light App Styles */
+/* Note: avoids `inset`, flex `gap` and `aspect-ratio` for iOS 12 Safari */
+
+:root {
+  --d: 30vmin; /* lamp diameter, set precisely by app.js */
+  --edge-top: 2.5vmin;
+  --edge-right: 2.5vmin;
+  --edge-bottom: 2.5vmin;
+  --edge-left: 2.5vmin;
+  --edge-top: max(2.5vmin, env(safe-area-inset-top));
+  --edge-right: max(2.5vmin, env(safe-area-inset-right));
+  --edge-bottom: max(2.5vmin, env(safe-area-inset-bottom));
+  --edge-left: max(2.5vmin, env(safe-area-inset-left));
+  --stripe: 1.6vmin;
+  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: #050505;
+  font-family: var(--font);
+  color: #fff;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* ---------- Backboard (fills the screen) ---------- */
+
+.backboard {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--edge-top) + var(--stripe) + 4vmin)
+           calc(var(--edge-right) + var(--stripe) + 4vmin)
+           calc(var(--edge-bottom) + var(--stripe) + 4vmin)
+           calc(var(--edge-left) + var(--stripe) + 4vmin);
+  background:
+    radial-gradient(ellipse at 50% 45%, #1b1c1d 0%, #0c0c0d 55%, #050505 100%);
+  cursor: pointer;
+}
+
+/* Reflective white border, like a UK signal backboard */
+.backboard::before {
+  content: "";
+  position: absolute;
+  top: var(--edge-top);
+  right: var(--edge-right);
+  bottom: var(--edge-bottom);
+  left: var(--edge-left);
+  border: var(--stripe) solid #e9e9e6;
+  border-radius: 3.5vmin;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(0, 0, 0, 0.35);
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+/* ---------- Housing ---------- */
+
+.housing {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: calc(var(--d) * 1.36);
+  height: calc(var(--d) * 3.7);
+  border-radius: calc(var(--d) * 0.2);
+  background:
+    linear-gradient(90deg,
+      #0e0f10 0%,
+      #25272a 16%,
+      #1b1d1f 50%,
+      #25272a 84%,
+      #0e0f10 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 2vmin 5vmin rgba(0, 0, 0, 0.85);
+}
+
+/* Mounting bolts */
+.housing::before,
+.housing::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: calc(var(--d) * 0.07);
+  height: calc(var(--d) * 0.07);
+  margin-left: calc(var(--d) * -0.035);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #6a6d71 0%, #34363a 45%, #121314 100%);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.housing::before { top: calc(var(--d) * 0.06); }
+.housing::after { bottom: calc(var(--d) * 0.06); }
+
+.landscape .housing {
+  flex-direction: row;
+  width: calc(var(--d) * 3.7);
+  height: calc(var(--d) * 1.36);
+  background:
+    linear-gradient(180deg,
+      #0e0f10 0%,
+      #25272a 16%,
+      #1b1d1f 50%,
+      #25272a 84%,
+      #0e0f10 100%);
+}
+
+.landscape .housing::before,
+.landscape .housing::after {
+  top: 50%;
+  bottom: auto;
+  margin-left: 0;
+  margin-top: calc(var(--d) * -0.035);
+}
+
+.landscape .housing::before { left: calc(var(--d) * 0.06); }
+.landscape .housing::after { left: auto; right: calc(var(--d) * 0.06); }
+
+/* ---------- Lamps ---------- */
+
+.lamp {
+  position: relative;
+  flex: none;
+  width: var(--d);
+  height: var(--d);
+}
+
+.lamp.red {
+  --on: #ff2d1f;
+  --hot: #ffc2b3;
+  --on-lo: #a80d06;
+  --off-hi: #4f1410;
+  --off: #300a07;
+  --off-lo: #140302;
+  --glow: rgba(255, 45, 25, 0.5);
+}
+
+.lamp.amber {
+  --on: #ffa000;
+  --hot: #ffecb8;
+  --on-lo: #b85600;
+  --off-hi: #523408;
+  --off: #332005;
+  --off-lo: #150d01;
+  --glow: rgba(255, 160, 0, 0.45);
+}
+
+.lamp.green {
+  --on: #00e3a0;
+  --hot: #c8fff0;
+  --on-lo: #00885a;
+  --off-hi: #0a4630;
+  --off: #062b1d;
+  --off-lo: #01120b;
+  --glow: rgba(0, 230, 160, 0.4);
+}
+
+/* Light spilling onto the housing */
+.glow {
+  position: absolute;
+  z-index: 0;
+  top: -65%;
+  left: -65%;
+  width: 230%;
+  height: 230%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow) 0%, rgba(0, 0, 0, 0) 62%);
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  pointer-events: none;
+}
+
+.bezel {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #050505 62%, #2a2c2f 68%, #141517 82%, #0a0a0b 100%);
+  box-shadow:
+    0 0 0 calc(var(--d) * 0.012) #08090a,
+    0 calc(var(--d) * 0.015) calc(var(--d) * 0.03) rgba(0, 0, 0, 0.7);
+}
+
+.lens {
+  position: absolute;
+  top: 8%;
+  right: 8%;
+  bottom: 8%;
+  left: 8%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, var(--off-hi) 0%, var(--off) 55%, var(--off-lo) 100%);
+  /* Keep the overflow clip round in older Safari */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+/* Lit LED array */
+.lit {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 42%) 50% 50% / calc(var(--d) * 0.06) calc(var(--d) * 0.06),
+    radial-gradient(circle at 50% 46%, #fff 0%, var(--hot) 14%, var(--on) 50%, var(--on-lo) 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+/* Fresnel rings */
+.lens::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle at 50% 50%,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.07) 0.8%,
+    rgba(255, 255, 255, 0) 1.6%,
+    rgba(255, 255, 255, 0) 6%);
+}
+
+/* Visor shadow and glass highlight */
+.lens::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse 34% 18% at 36% 22%, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.15) 22%, rgba(0, 0, 0, 0) 38%),
+    radial-gradient(circle, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+.lamp.on .lit,
+.lamp.on .glow {
+  opacity: 1;
+}
+
+/* Hood: thick at the top, tapering towards the sides, cut off above the middle */
+.visor {
+  position: absolute;
+  z-index: 2;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 66%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.visor::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--d) * 1.2);
+  border-radius: 50%;
+  border-style: solid;
+  border-width: calc(var(--d) * 0.12) calc(var(--d) * 0.08) 0 calc(var(--d) * 0.08);
+  border-color: #222427 #17181a transparent #17181a;
+  box-shadow: inset 0 calc(var(--d) * 0.012) 0 rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- Settings button (hidden until the screen is tapped) ---------- */
+
+.settings-btn {
+  position: fixed;
+  z-index: 10;
+  top: calc(var(--edge-top) + var(--stripe) + 10px);
+  right: calc(var(--edge-right) + var(--stripe) + 10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(28, 28, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.settings-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.settings-btn:active {
+  background: rgba(60, 60, 64, 0.95);
+}
+
+/* ---------- Settings sheet ---------- */
+
+.sheet-backdrop {
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.sheet-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease, visibility 0s;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 440px;
+  max-height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px calc(20px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
+  background: #1c1c1e;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+  cursor: default;
+}
+
+.sheet-backdrop.open .sheet {
+  transform: translateY(0);
+}
+
+.sheet-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.seq-toggle {
+  display: flex;
+  padding: 3px;
+  background: #2c2c2e;
+  border-radius: 12px;
+}
+
+.seq-btn {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 9px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #aeaeb2;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.seq-btn.active {
+  background: #48484a;
+  color: #fff;
+}
+
+.seq-hint {
+  margin: 10px 0 6px;
+  font-size: 0.8125rem;
+  color: #8e8e93;
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row.hidden {
+  display: none;
+}
+
+.row-dots {
+  display: flex;
+  align-items: center;
+  width: 40px;
+  flex: none;
+}
+
+.dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  border-radius: 50%;
+}
+
+.dot.red { background: #ff2d1f; box-shadow: 0 0 8px rgba(255, 45, 25, 0.7); }
+.dot.amber { background: #ffa000; box-shadow: 0 0 8px rgba(255, 160, 0, 0.7); }
+.dot.green { background: #00e3a0; box-shadow: 0 0 8px rgba(0, 230, 160, 0.7); }
+
+.row-label {
+  flex: 1;
+  font-size: 1.0625rem;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.step-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2c2c2e;
+  font-size: 1.5rem;
+  line-height: 1;
+  touch-action: none;
+}
+
+.step-btn:active {
+  background: #48484a;
+}
+
+.step-btn:disabled {
+  opacity: 0.35;
+}
+
+.step-value {
+  display: block;
+  min-width: 68px;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.done-btn {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 18px;
+  border-radius: 12px;
+  background: #ffa000;
+  color: #1a1000;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.done-btn:active {
+  background: #e08c00;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow, .lit, .sheet, .sheet-backdrop, .settings-btn {
+    transition: none;
+  }
+}
